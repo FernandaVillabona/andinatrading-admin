@@ -1,11 +1,11 @@
 import express from "express";
-import { getLogs } from "../controllers/logController.js";
+import { getOrdenesDetalle } from "../controllers/ordenesController.js";
 import { verificarToken, soloAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.use(verificarToken, soloAdmin); 
-router.get("/", getLogs);
-router.get('/logs', getLogs);
+router.use(verificarToken, soloAdmin);
+
+router.get("/", getOrdenesDetalle);
 
 export default router;

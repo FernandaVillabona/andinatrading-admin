@@ -8,6 +8,8 @@ import historialRoutes from "./routes/historialRoutes.js";
 import backupRoutes from "./routes/backupRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import usersAdminRoutes from "./routes/usersAdminRoutes.js";
+import ordenesRoutes from "./routes/ordenesRoutes.js";
+import analisisAdminRoutes from "./routes/analisisAdminRoutes.js";
 
 
 dotenv.config();
@@ -19,9 +21,13 @@ app.use(express.json());
 app.use("/api/admin", userRoutes);
 app.use("/api/admin/usuarios", usersAdminRoutes);
 app.use("/api/logs", logRoutes);
+app.use("/api/admin/logs", logRoutes); 
 app.use("/api/backups", backupRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/historial", historialRoutes);
+app.use("/api/admin/ordenes", ordenesRoutes);
+app.use("/api/admin/analisis", analisisAdminRoutes);
+
 
 
 const PORT = process.env.PORT || 4000;
