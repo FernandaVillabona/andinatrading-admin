@@ -1,0 +1,9 @@
+<div class="clock-container">
+  <div class="clock">
+    <div class="center-dot"></div>
+    <div class="hand hour" [style.transform]="'rotate(' + hourDeg + 'deg)'"></div>
+    <div class="hand minute" [style.transform]="'rotate(' + minuteDeg + 'deg)'"></div>
+    <div class="hand second" [style.transform]="'rotate(' + secondDeg + 'deg)'"></div>
+  </div>
+  <p class="timezone">{{ zone }}</p>
+</div>

@@ -1,0 +1,510 @@
+:root {
+  --bg: #e9ecf7;
+  --accent: #9c8ff5;
+  --text: #232946;
+  --shadow-light: rgba(255, 255, 255, 0.8);
+  --shadow-dark: rgba(0, 0, 0, 0.15);
+}
+
+/* Layout general */
+.dashboard-container {
+  display: flex;
+  flex-direction: column; 
+  background: linear-gradient(145deg, #d4d8f0, #e9ecf7);
+  font-family: "Segoe UI", sans-serif;
+  color: var(--text);
+
+  border-radius: 30px;
+  margin: 2rem;
+  padding: 2rem;
+  box-shadow:
+    10px 10px 20px var(--shadow-dark),
+    -10px -10px 20px var(--shadow-light);
+
+  overflow: visible;
+  height: auto;
+}
+
+.dashboard-container:hover {
+  box-shadow:
+    6px 6px 12px var(--shadow-dark),
+    -6px -6px 12px var(--shadow-light);
+}
+
+
+/* Main content */
+.main-content {
+  flex: 1;
+  padding: 2rem 3rem;
+  overflow-y: auto;
+}
+
+.dashboard-header h2 {
+  font-size: 1.6rem;
+  color: var(--accent);
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+.stats {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  flex: 1;
+  background: var(--bg);
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow:
+    6px 6px 12px var(--shadow-dark),
+    -6px -6px 12px var(--shadow-light);
+  transition: 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    3px 3px 8px var(--shadow-dark),
+    -3px -3px 8px var(--shadow-light);
+}
+
+.stat-card h3 {
+  color: var(--accent);
+  font-size: 2rem;
+  margin-bottom: 0.4rem;
+}
+
+.events {
+  background: var(--bg);
+  border-radius: 18px;
+  padding: 1.5rem;
+  box-shadow:
+    8px 8px 16px var(--shadow-dark),
+    -8px -8px 16px var(--shadow-light);
+}
+
+.events-title {
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.neu-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  text-align: left;
+}
+
+.neu-table th {
+  background: #d9dcf1;
+  color: var(--text);
+  font-weight: 600;
+  padding: 0.8rem;
+  border-radius: 8px 8px 0 0;
+}
+
+.neu-table td {
+  background: var(--bg);
+  padding: 0.8rem;
+  box-shadow:
+    inset 2px 2px 4px var(--shadow-dark),
+    inset -2px -2px 4px var(--shadow-light);
+  border-radius: 6px;
+  margin: 2px;
+}
+
+.dashboard-header {
+  margin-bottom: 1rem;
+  h2 {
+    color: #4b3fa6;
+    margin-bottom: 0.5rem;
+  }
+
+  .user-greeting {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.3);
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    font-size: 1rem;
+    color: #232946;
+
+    .greeting-text {
+      font-weight: 500;
+    }
+
+    .clock {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      color: #5b4fc0;
+
+      i {
+        font-size: 1.2rem;
+      }
+    }
+  }
+}
+
+.user-greeting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.35);
+  padding: 1rem;
+  border-radius: 16px;
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.05),
+    3px 3px 6px rgba(255, 255, 255, 0.4);
+}
+
+.clock-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #eceffb;
+  border-radius: 20px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow:
+    9px 9px 16px #c7c7d9,
+    -9px -9px 16px #ffffff;
+
+  .header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    h2 {
+      margin: 0;
+      color: #4b3fa6;
+      font-weight: 600;
+    }
+
+    .greeting {
+      .welcome {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #232946;
+      }
+
+      .time {
+        font-size: 0.95rem;
+        color: #5b5b8c;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+
+
+/* === NUEVA TARJETA GENERAL NEUMÓRFICA === */
+.neu-section {
+  background: #eceffb;
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow:
+    9px 9px 16px #c7c7d9,
+    -9px -9px 16px #ffffff;
+  transition: all 0.3s ease;
+}
+
+.neu-section:hover {
+  box-shadow:
+    6px 6px 12px #c7c7d9,
+    -6px -6px 12px #ffffff;
+  transform: translateY(-2px);
+}
+
+/* === Contenedor de estadísticas dentro de la tarjeta === */
+.stats {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: space-around;
+  margin: 0;
+}
+
+.stat-card {
+  flex: 1;
+  background: #e9ecf7;
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow:
+    inset 3px 3px 6px rgba(0, 0, 0, 0.1),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.7);
+  transition: 0.3s ease;
+}
+
+.stat-card h3 {
+  color: var(--accent);
+  font-size: 2rem;
+  margin-bottom: 0.4rem;
+}
+
+.stat-card p {
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* === Eventos y tablas dentro de su tarjeta === */
+.events {
+  background: #e9ecf7;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow:
+    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.6);
+}
+
+.events-title {
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+
+/* 🟣 Neumorphic Loading Animation */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  background: var(--bg);
+}
+
+.loader-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  background: #e9ecf7;
+  border-radius: 25px;
+  padding: 2rem 3rem;
+  box-shadow:
+    9px 9px 16px rgba(0, 0, 0, 0.15),
+    -9px -9px 16px rgba(255, 255, 255, 0.8);
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+.circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #d4d8f0, #e9ecf7);
+  box-shadow:
+    inset 4px 4px 6px rgba(0, 0, 0, 0.15),
+    inset -4px -4px 6px rgba(255, 255, 255, 0.9);
+  position: relative;
+}
+
+.circle::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70%;
+  height: 70%;
+  background: linear-gradient(145deg, #b8b2f5, #9c8ff5);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  animation: pulse 1.5s infinite ease-in-out;
+  box-shadow:
+    0 0 15px rgba(156, 143, 245, 0.4),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.5);
+}
+
+.text {
+  color: #5b4fc0;
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  animation: fadeInText 1s ease-in-out;
+}
+
+/* 🔹 Animations */
+@keyframes pulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeInText {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* Tarjetas de estadísticas con colores mejor definidos */
+.stat-card {
+  flex: 1;
+  padding: 1.5rem;
+  text-align: center;
+  border-radius: 18px;
+  color: var(--text);
+  background: linear-gradient(145deg, #dfe3ff, #f0f3ff);
+  box-shadow:
+    6px 6px 12px rgba(0, 0, 0, 0.15),
+    -6px -6px 12px rgba(255, 255, 255, 0.9),
+    inset 0 0 8px rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+/* Colores más notorios por tipo de métrica */
+.stat-card:nth-child(1) {
+  background: linear-gradient(145deg, #c7d5ff, #e4eaff);
+}
+
+.stat-card:nth-child(2) {
+  background: linear-gradient(145deg, #e3ccff, #f1e4ff);
+}
+
+.stat-card:nth-child(3) {
+  background: linear-gradient(145deg, #ffe0c7, #fff1e0);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    3px 3px 8px rgba(0, 0, 0, 0.2),
+    -3px -3px 8px rgba(255, 255, 255, 0.9);
+}
+
+.stat-card h3 {
+  color: #4b3fa6;
+  font-size: 2.2rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.stat-card p {
+  font-weight: 500;
+  color: #292b40;
+}
+
+.stat-card .icon {
+  font-size: 2.8rem;
+  margin-bottom: 0.8rem;
+  opacity: 0.95;
+  transition: all 0.3s ease;
+}
+
+.stat-card:nth-child(1) .icon {
+  color: #6a8cff; /* azul suave */
+  filter: drop-shadow(0 2px 3px rgba(106, 140, 255, 0.3))
+          drop-shadow(0 -2px 3px rgba(255, 255, 255, 0.4));
+}
+
+.stat-card:nth-child(2) .icon {
+  color: #a784ff; /* violeta suave */
+  filter: drop-shadow(0 2px 3px rgba(167, 132, 255, 0.3))
+          drop-shadow(0 -2px 3px rgba(255, 255, 255, 0.4));
+}
+
+.stat-card:nth-child(3) .icon {
+  color: #ffb86b; /* durazno/naranja claro */
+  filter: drop-shadow(0 2px 3px rgba(255, 184, 107, 0.3))
+          drop-shadow(0 -2px 3px rgba(255, 255, 255, 0.4));
+}
+
+.stat-card:hover .icon {
+  transform: scale(1.08);
+  opacity: 1;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.15))
+          drop-shadow(0 -3px 6px rgba(255, 255, 255, 0.6));
+}
+
+/* 🎨 Etiquetas de módulo con estilo neumórfico */
+.modulo-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.08),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.8);
+  color: var(--text);
+}
+
+/* 🟣 Autenticación */
+.modulo-autenticacion {
+  background: #e8dcff;
+  color: #5b3fc6;
+}
+
+/* 🟢 Usuarios */
+.modulo-usuarios {
+  background: #dcffee;
+  color: #2e7a5b;
+}
+
+/* 🟠 Órdenes */
+.modulo-ordenes {
+  background: #ffe6cc;
+  color: #b36b00;
+}
+
+/* 🔵 Backups */
+.modulo-backups {
+  background: #dce9ff;
+  color: #2a4fa5;
+}
+
+/* 🟡 Historial */
+.modulo-historial {
+  background: #fff8d6;
+  color: #a68700;
+}
+
+/* ⚪ Default */
+.modulo-default {
+  background: #e9ecf7;
+  color: #555;
+}

@@ -1,0 +1,259 @@
+<div class="dashboard-container" *ngIf="!loading; else cargando">
+  <main class="main-content">
+
+    <!-- 🟣 Header -->
+    <header class="dashboard-header">
+      <div class="header-left">
+        <h2>Análisis</h2>
+        <div class="greeting">
+          <p class="welcome">Bienvenido, <strong>{{ nombreUsuario }}</strong></p>
+          <p class="time">{{ horaActual }} | {{ zona }}</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <app-clock></app-clock>
+      </div>
+    </header>
+
+    <!-- Pestañas -->
+    <div class="tabs">
+      <button class="pill" [class.active]="active==='ACCIONES'" (click)="setTab('ACCIONES')">Acciones actuales</button>
+      <button class="pill" [class.active]="active==='ORDENES'"  (click)="setTab('ORDENES')">Historial de órdenes</button>
+      <button class="pill" [class.active]="active==='MOVIMIENTOS'" (click)="setTab('MOVIMIENTOS')">Movimientos</button>
+      <button class="pill" [class.active]="active==='TOP'" (click)="setTab('TOP')">Top empresas</button>
+    </div>
+
+    <!-- ╭────────────────────────────────────────────────────────────╮
+         │                       TAB: ACCIONES                        │
+         ╰────────────────────────────────────────────────────────────╯ -->
+    <section class="neu-section" *ngIf="active==='ACCIONES'">
+      <!-- 🔎 Filtros -->
+      <div class="filters-bar">
+        <input class="neu-input-inset" placeholder="Empresa..."
+               [(ngModel)]="fAcciones.empresa" (keyup.enter)="loadTab('ACCIONES')" />
+        <input class="neu-input-inset" placeholder="Buscar en tabla..."
+               [(ngModel)]="fAcciones.q" (input)="applyAcciones()" />
+        <label>Mostrar:
+          <select [(ngModel)]="aLimit" (change)="applyAcciones()">
+            <option [value]="10">10</option><option [value]="25">25</option><option [value]="50">50</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- 📈 Gráfica -->
+      <div class="chart-card"><canvas id="chAcciones"></canvas></div>
+
+      <!-- 📋 Tabla -->
+      <table class="neu-table" *ngIf="accionesFiltradas.length; else sinAcciones">
+        <thead>
+          <tr>
+            <th>Empresa</th>
+            <th>Ticker</th>
+            <th>Precio</th>
+            <th>Variación %</th>
+            <th>Actualización</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let a of accionesFiltradas">
+            <td>{{ a.empresa || a.nombre_empresa }}</td>
+            <td>{{ a.ticker || a.simbolo }}</td>
+            <td>{{ (a.precio ?? a.precio_actual) | number:'1.2-2' }}</td>
+            <td>{{ (a.variacion_porcentaje ?? a.variacion) | percent:'1.2-2' }}</td>
+            <td>{{ (a.updated_at || a.fecha) | date:'dd/MM/yy, HH:mm':'America/Bogota' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <ng-template #sinAcciones><p>No hay datos.</p></ng-template>
+
+      <!-- ⏭ Paginación -->
+      <div class="pagination">
+        <button class="page-btn" (click)="aPag(-1)" [disabled]="aPage<=1"><i class="bi bi-chevron-left"></i></button>
+        <span>Página {{ aPage }} / {{ aPages }} — {{ aTotal }} filas</span>
+        <button class="page-btn" (click)="aPag(1)" [disabled]="aPage>=aPages"><i class="bi bi-chevron-right"></i></button>
+      </div>
+    </section>
+
+    <!-- ╭────────────────────────────────────────────────────────────╮
+         │                        TAB: ÓRDENES                        │
+         ╰────────────────────────────────────────────────────────────╯ -->
+    <section class="neu-section" *ngIf="active==='ORDENES'">
+      <!-- 🔎 Filtros -->
+      <div class="filters-bar">
+        <input type="date" [(ngModel)]="fOrdenes.desde" (change)="loadTab('ORDENES')" />
+        <input type="date" [(ngModel)]="fOrdenes.hasta" (change)="loadTab('ORDENES')" />
+        <select [(ngModel)]="fOrdenes.tipo" (change)="loadTab('ORDENES')">
+          <option value="">Todos</option>
+          <option value="COMPRA">COMPRA</option>
+          <option value="VENTA">VENTA</option>
+        </select>
+        <input class="neu-input-inset" placeholder="Buscar en tabla..."
+               [(ngModel)]="fOrdenes.q" (input)="applyOrdenes()" />
+        <label>Mostrar:
+          <select [(ngModel)]="oLimit" (change)="applyOrdenes()">
+            <option [value]="10">10</option><option [value]="25">25</option><option [value]="50">50</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- 📈 Gráfica -->
+      <div class="chart-card"><canvas id="chOrdenes"></canvas></div>
+
+      <!-- 📋 Tabla -->
+      <table class="neu-table" *ngIf="ordenesFiltradas.length; else sinOrdenes">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Fecha</th>
+            <th>Tipo</th>
+            <th>Estado</th>
+            <th>Valor</th>
+            <th>Comisión</th>
+            <th>Comisionista</th>
+            <th>Inversionista</th>
+            <th>Correo</th>
+            <th>Ciudad</th>
+            <th>País</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let o of ordenesFiltradas">
+            <td>{{ o.id_orden || o.id }}</td>
+            <td>{{ (o.fecha || o.fecha_creacion) | date:'dd/MM/yy, HH:mm':'America/Bogota' }}</td>
+            <td>
+              <span class="tipo-badge" [ngClass]="o.tipo_orden === 'COMPRA' ? 'tipo-creacion' : 'tipo-modificacion'">
+                {{ o.tipo_orden }}
+              </span>
+            </td>
+            <td>{{ o.estado }}</td>
+            <td>{{ o.valor_orden | currency:'USD' }}</td>
+            <td>{{ o.valor_comision | currency:'USD' }}</td>
+            <td>{{ o.nombre_comisionista || '—' }}</td>
+            <td>{{ o.nombre_inversionista || '—' }}</td>
+            <td>{{ o.correo_inversionista || '—' }}</td>
+            <td>{{ o.ciudad_inversionista || '—' }}</td>
+            <td>{{ o.pais_inversionista || '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <ng-template #sinOrdenes><p>No hay órdenes que coincidan con tu búsqueda.</p></ng-template>
+
+      <!-- ⏭ Paginación -->
+      <div class="pagination">
+        <button class="page-btn" (click)="oPag(-1)" [disabled]="oPage<=1"><i class="bi bi-chevron-left"></i></button>
+        <span>Página {{ oPage }} / {{ oPages }} — {{ oTotal }} filas</span>
+        <button class="page-btn" (click)="oPag(1)" [disabled]="oPage>=oPages"><i class="bi bi-chevron-right"></i></button>
+      </div>
+    </section>
+
+    <!-- ╭────────────────────────────────────────────────────────────╮
+         │                     TAB: MOVIMIENTOS                        │
+         ╰────────────────────────────────────────────────────────────╯ -->
+    <section class="neu-section" *ngIf="active==='MOVIMIENTOS'">
+      <!-- 🔎 Filtros -->
+      <div class="filters-bar">
+        <input type="number" class="neu-input-inset" placeholder="ID Inversionista"
+               [(ngModel)]="fMovs.inversionista_id" (keyup.enter)="loadTab('MOVIMIENTOS')" />
+        <input type="date" [(ngModel)]="fMovs.desde" (change)="loadTab('MOVIMIENTOS')" />
+        <input type="date" [(ngModel)]="fMovs.hasta" (change)="loadTab('MOVIMIENTOS')" />
+        <input class="neu-input-inset" placeholder="Buscar en tabla..."
+               [(ngModel)]="fMovs.q" (input)="applyMovs()" />
+        <label>Mostrar:
+          <select [(ngModel)]="mLimit" (change)="applyMovs()">
+            <option [value]="10">10</option><option [value]="25">25</option><option [value]="50">50</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- 📈 Gráfica -->
+      <div class="chart-card"><canvas id="chMovs"></canvas></div>
+
+      <!-- 📋 Tabla -->
+      <table class="neu-table" *ngIf="movsFiltradas.length; else sinMovs">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Inversionista</th>
+            <th>Tipo</th>
+            <th>Monto</th>
+            <th>Detalle</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of movsFiltradas">
+            <td>{{ m.fecha | date:'dd/MM/yy, HH:mm':'America/Bogota' }}</td>
+            <td>{{ m.inversionista || m.nombre_inversionista }}</td>
+            <td>{{ m.tipo }}</td>
+            <td>{{ m.monto | currency:'USD' }}</td>
+            <td>{{ m.detalle || '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <ng-template #sinMovs><p>No hay movimientos que coincidan con tu búsqueda.</p></ng-template>
+
+      <!-- ⏭ Paginación -->
+      <div class="pagination">
+        <button class="page-btn" (click)="mPag(-1)" [disabled]="mPage<=1"><i class="bi bi-chevron-left"></i></button>
+        <span>Página {{ mPage }} / {{ mPages }} — {{ mTotal }} filas</span>
+        <button class="page-btn" (click)="mPag(1)" [disabled]="mPage>=mPages"><i class="bi bi-chevron-right"></i></button>
+      </div>
+    </section>
+
+    <!-- ╭────────────────────────────────────────────────────────────╮
+         │                     TAB: TOP EMPRESAS                       │
+         ╰────────────────────────────────────────────────────────────╯ -->
+    <section class="neu-section" *ngIf="active==='TOP'">
+      <!-- 🔎 Filtros -->
+      <div class="filters-bar">
+        <input class="neu-input-inset" placeholder="Buscar empresa..."
+               [(ngModel)]="fTop.q" (input)="applyTop()" />
+        <label>Mostrar:
+          <select [(ngModel)]="tLimit" (change)="applyTop()">
+            <option [value]="10">10</option><option [value]="25">25</option><option [value]="50">50</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- 📈 Gráfica -->
+      <div class="chart-card"><canvas id="chTop"></canvas></div>
+
+      <!-- 📋 Tabla -->
+      <table class="neu-table" *ngIf="topFiltradas.length; else sinTop">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Empresa</th>
+            <th>Órdenes</th>
+            <th>Volumen</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let t of topFiltradas; let i = index">
+            <td>{{ (tPage - 1) * tLimit + i + 1 }}</td>
+            <td>{{ t.empresa }}</td>
+            <td>{{ t.total_ordenes }}</td>
+            <td>{{ t.volumen | number:'1.0-0' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <ng-template #sinTop><p>No hay empresas que coincidan con tu búsqueda.</p></ng-template>
+
+      <!-- ⏭ Paginación -->
+      <div class="pagination">
+        <button class="page-btn" (click)="tPag(-1)" [disabled]="tPage<=1"><i class="bi bi-chevron-left"></i></button>
+        <span>Página {{ tPage }} / {{ tPages }} — {{ tTotal }} filas</span>
+        <button class="page-btn" (click)="tPag(1)" [disabled]="tPage>=tPages"><i class="bi bi-chevron-right"></i></button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<ng-template #cargando>
+  <div class="loading-container">
+    <div class="loader-card">
+      <div class="circle"></div>
+      <div class="text">Cargando...</div>
+    </div>
+  </div>
+</ng-template>

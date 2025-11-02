@@ -1,0 +1,142 @@
+<div class="dashboard-container" *ngIf="!loading; else cargando">
+  <main class="main-content">
+
+    <!-- 🟣 Header -->
+    <header class="dashboard-header">
+      <div class="header-left">
+        <h2>Registro de Actividades</h2>
+        <div class="greeting">
+          <p class="welcome">Bienvenido, <strong>{{ nombreUsuario }}</strong></p>
+          <p class="time">{{ horaActual }} | {{ zonaHoraria }}</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <app-clock></app-clock>
+      </div>
+    </header>
+
+    <!-- Pestañas -->
+    <div class="tabs">
+      <button class="pill" [class.active]="tab==='eventos'" (click)="cambiarTab('eventos')">Eventos</button>
+      <button class="pill" [class.active]="tab==='ordenes'" (click)="cambiarTab('ordenes')">Órdenes</button>
+    </div>
+
+    <!-- 🔎 Filtros compartidos -->
+    <section class="neu-section">
+      <div class="filters-bar">
+        <div class="search-bar">
+          <input
+            type="text"
+            class="neu-input-inset"
+            placeholder="🔍 Buscar..."
+            [(ngModel)]="filtroTexto"
+            (input)="aplicarFiltro()"
+          />
+        </div>
+
+        <!-- Pills de tipos solo para Eventos -->
+        <div class="type-pills" *ngIf="tab==='eventos'">
+          <button class="pill" [class.active]="filtroTipo === ''" (click)="setTipo('')">Todos</button>
+          <button class="pill" [class.active]="filtroTipo === 'CREACION'" (click)="setTipo('CREACION')">Creación</button>
+          <button class="pill" [class.active]="filtroTipo === 'MODIFICACION'" (click)="setTipo('MODIFICACION')">Modificación</button>
+          <button class="pill" [class.active]="filtroTipo === 'ELIMINACION'" (click)="setTipo('ELIMINACION')">Eliminación</button>
+          <button class="pill" [class.active]="filtroTipo === 'RESPALDO'" (click)="setTipo('RESPALDO')">Respaldo</button>
+          <button class="pill" [class.active]="filtroTipo === 'OTRO'" (click)="setTipo('OTRO')">Otro</button>
+        </div>
+
+        <!-- Pills de módulos (eventos) -->
+        <div class="type-pills scrollable" *ngIf="tab==='eventos'">
+          <button class="pill small" [class.active]="filtroModulo === ''" (click)="setModulo('')">Todos los módulos</button>
+          <button class="pill small" *ngFor="let m of modulosDisponibles"
+                  [class.active]="filtroModulo === m" (click)="setModulo(m)">
+            {{ m }}
+          </button>
+        </div>
+      </div>
+
+      <!-- 📋 Tabla EVENTOS -->
+      <table class="neu-table" *ngIf="tab==='eventos' && logsFiltrados.length > 0; else sinEventos">
+        <thead>
+          <tr>
+            <th (click)="ordenarPor('fecha')">Fecha</th>
+            <th (click)="ordenarPor('usuario')">Usuario</th>
+            <th (click)="ordenarPor('accion')">Acción</th>
+            <th (click)="ordenarPor('tipo')">Tipo</th>
+            <th (click)="ordenarPor('modulo')">Módulo</th>
+            <th (click)="ordenarPor('id')">ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of logsFiltrados">
+            <td>{{ log.fecha | date:'dd/MM/yy, HH:mm': zonaHoraria }}</td>
+            <td>{{ log.usuario || '—' }}</td>
+            <td>{{ log.accion }}</td>
+            <td>
+              <span class="tipo-badge" [ngClass]="getTipoClass(log.tipo)">{{ log.tipo }}</span>
+            </td>
+            <td>
+              <span class="modulo-badge" [ngClass]="getModuloClass(log.modulo)">{{ log.modulo }}</span>
+            </td>
+            <td>{{ log.id }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 📋 Tabla ÓRDENES -->
+      <table class="neu-table" *ngIf="tab==='ordenes' && ordenesFiltradas.length > 0; else sinOrdenes">
+        <thead>
+          <tr>
+            <th (click)="ordenarOrdenesPor('id_orden')">ID</th>
+            <th (click)="ordenarOrdenesPor('tipo_orden')">Tipo</th>
+            <th (click)="ordenarOrdenesPor('estado')">Estado</th>
+            <th (click)="ordenarOrdenesPor('valor_orden')">Valor</th>
+            <th (click)="ordenarOrdenesPor('valor_comision')">Comisión</th>
+            <th (click)="ordenarOrdenesPor('fecha_creacion')">Fecha</th>
+            <th (click)="ordenarOrdenesPor('nombre_comisionista')">Comisionista</th>
+            <th (click)="ordenarOrdenesPor('nombre_inversionista')">Inversionista</th>
+            <th (click)="ordenarOrdenesPor('correo_inversionista')">Correo</th>
+            <th (click)="ordenarOrdenesPor('ciudad_inversionista')">Ciudad</th>
+            <th (click)="ordenarOrdenesPor('pais_inversionista')">País</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let o of ordenesFiltradas">
+            <td>{{ o.id_orden }}</td>
+            <td>
+              <span class="tipo-badge" [ngClass]="o.tipo_orden === 'COMPRA' ? 'tipo-creacion' : 'tipo-modificacion'">
+                {{ o.tipo_orden }}
+              </span>
+            </td>
+            <td>{{ o.estado }}</td>
+            <td>{{ o.valor_orden | currency:'USD':'symbol':'1.0-0' }}</td>
+            <td>{{ o.valor_comision | currency:'USD':'symbol':'1.0-0' }}</td>
+            <td>{{ o.fecha_creacion | date:'dd/MM/yy, HH:mm': zonaHoraria }}</td>
+            <td>{{ o.nombre_comisionista || '—' }}</td>
+            <td>{{ o.nombre_inversionista || '—' }}</td>
+            <td>{{ o.correo_inversionista || '—' }}</td>
+            <td>{{ o.ciudad_inversionista || '—' }}</td>
+            <td>{{ o.pais_inversionista || '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <ng-template #sinEventos>
+        <p *ngIf="tab==='eventos'">No hay registros que coincidan con tu búsqueda.</p>
+      </ng-template>
+
+      <ng-template #sinOrdenes>
+        <p *ngIf="tab==='ordenes'">No hay órdenes que coincidan con tu búsqueda.</p>
+      </ng-template>
+    </section>
+
+  </main>
+</div>
+
+<ng-template #cargando>
+  <div class="loading-container">
+    <div class="loader-card">
+      <div class="circle"></div>
+      <div class="text">Cargando...</div>
+    </div>
+  </div>
+</ng-template>

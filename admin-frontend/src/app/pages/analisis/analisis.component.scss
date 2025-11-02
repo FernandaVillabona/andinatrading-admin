@@ -1,0 +1,52 @@
+@import '../dashboard/dashboard.component.scss';
+@import '../historial/historial.component.scss';
+
+.neu-container {
+  background: var(--bg);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+}
+
+.neu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+
+  h2 {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .search-bar {
+    width: 280px;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    border: none;
+    box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+    outline: none;
+  }
+}
+
+.neu-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th, td {
+    padding: 0.8rem 1rem;
+    text-align: left;
+  }
+
+  thead {
+    background: #e0e4f8;
+    border-radius: 10px;
+  }
+
+  tbody tr {
+    background: #f4f5fc;
+    box-shadow: inset 2px 2px 4px var(--shadow-dark), inset -2px -2px 4px var(--shadow-light);
+    border-radius: 12px;
+    margin-bottom: 6px;
+  }
+}

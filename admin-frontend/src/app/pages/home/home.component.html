@@ -1,0 +1,72 @@
+<div class="login-container">
+  <!-- 🟣 Mitad izquierda -->
+  <div class="left-panel">
+    <div class="branding">
+<div class="logo-wrapper">
+  <img src="assets/logoandinatrading.png" alt="Logo Andina Trading" class="logo" />
+</div>
+
+      <h1 class="title">Andina Trading</h1>
+    <div class="panel-subtitle">
+  <i class="bi bi-gear-fill"></i>
+  <span>Panel administrativo</span>
+</div>
+
+     <p class="dynamic-quote">
+  {{ frases[indiceFrase] }}
+</p>
+
+      <div class="divider"></div>
+      <div class="quote-box">
+        <p class="quote">
+          “Tu dinero, bajo control. Tus decisiones, con inteligencia.”
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⚪ Mitad derecha -->
+  <div class="right-panel">
+<div class="neu-panel">
+  <h2 class="form-title">Iniciar sesión</h2>
+  <p class="form-subtitle">Accede con tus credenciales de administrador</p>
+
+<form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+  <div class="input-wrapper">
+    <i class="bi bi-person-fill icon"></i>
+    <input
+      type="text"
+      name="correo"
+      placeholder="Correo electrónico"
+      [(ngModel)]="correo"
+      class="neu-input-inset"
+      required
+    />
+  </div>
+
+  <div class="input-wrapper">
+    <i class="bi bi-lock-fill icon"></i>
+    <input
+      type="password"
+      name="contrasena"
+      placeholder="Contraseña"
+      [(ngModel)]="contrasena"
+      class="neu-input-inset"
+      required
+    />
+  </div>
+
+  <button type="submit" class="neu-button" [disabled]="loginForm.invalid">
+    Entrar
+  </button>
+
+  <p *ngIf="errorMsg" class="error-msg">{{ errorMsg }}</p>
+</form>
+
+</div>
+  </div>
+
+  <footer class="login-footer">
+    © 2025 Andina Trading · Todos los derechos reservados
+  </footer>
+</div>

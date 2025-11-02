@@ -1,0 +1,107 @@
+@import '../dashboard/dashboard.component.scss'; /* reutiliza todo tu look neumórfico */
+
+/* Ajustes de listado */
+.filters-bar {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.search-bar input {
+  width: 100%;
+  background: #fff;
+  border: none;
+  border-radius: 16px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  box-shadow:
+    6px 6px 12px var(--shadow-dark),
+    -6px -6px 12px var(--shadow-light);
+}
+.search-bar input:focus {
+  outline: none;
+  box-shadow:
+    inset 3px 3px 6px var(--shadow-dark),
+    inset -3px -3px 6px var(--shadow-light);
+}
+
+.type-pills {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+
+  .pill {
+    border: none;
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--text);
+    font-weight: 600;
+    padding: 0.45rem 0.9rem;
+    cursor: pointer;
+    box-shadow:
+      6px 6px 12px var(--shadow-dark),
+      -6px -6px 12px var(--shadow-light);
+    transition: 0.2s ease;
+    display: flex; align-items: center; gap: .4rem;
+  }
+  .pill:hover { transform: translateY(-2px); }
+  .pill.active {
+    background: linear-gradient(145deg, #e6e3ff, #faf8ff);
+    color: #5b4fc0;
+    box-shadow:
+      3px 3px 8px var(--shadow-dark),
+      -3px -3px 8px var(--shadow-light),
+      inset 1px 1px 3px rgba(0,0,0,0.06),
+      inset -1px -1px 3px rgba(255,255,255,0.8);
+  }
+}
+
+.other-controls select {
+  background: var(--bg);
+  border: none;
+  border-radius: 12px;
+  padding: 0.45rem 0.7rem;
+  box-shadow:
+    inset 2px 2px 5px var(--shadow-dark),
+    inset -2px -2px 5px var(--shadow-light);
+}
+
+/* Tabla */
+.neu-table th { cursor: pointer; user-select: none; }
+.neu-table th i { margin-left: .35rem; font-size: .9rem; opacity: .7; }
+
+/* Badges de tipo */
+.tipo-badge {
+  display: inline-block;
+  padding: .25rem .6rem;
+  border-radius: 999px;
+  font-size: .8rem;
+  font-weight: 700;
+  box-shadow:
+    inset 2px 2px 4px rgba(0,0,0,0.08),
+    inset -2px -2px 4px rgba(255,255,255,0.8);
+}
+.tipo-admin { background: #e6f0ff; color: #2a5aa5; }
+.tipo-comisionista { background: #efe6ff; color: #5b3fc6; }
+.tipo-inversionista { background: #e7fff6; color: #1e7a56; }
+.tipo-default { background: #e9ecf7; color: #555; }
+
+/* Paginación */
+.pagination {
+  margin-top: 1rem;
+  display: flex; align-items: center; gap: 1rem; justify-content: center;
+}
+.page-btn {
+  border: none; padding: .5rem .8rem; border-radius: 12px; background: var(--bg);
+  box-shadow:
+    6px 6px 12px var(--shadow-dark),
+    -6px -6px 12px var(--shadow-light);
+}
+.page-btn:disabled { opacity: .4; cursor: not-allowed; }

@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 🎨 Paleta base */
+:root {
+  --bg-light: #e9eef5;     /* Fondo suave */
+  --bg-dark: #d1d9e6;      /* Fondo más oscuro para contraste */
+  --text-dark: #3a3a3a;    /* Texto base */
+  --accent: #6c63ff;       /* Color corporativo principal (puedes usar el violeta de AndinaTrading) */
+}
+
+/* 🌫️ Neumorfismo global */
+body {
+  background: var(--bg-light);
+  font-family: 'Poppins', sans-serif;
+  color: var(--text-dark);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* 🧱 Estilos de tarjetas y botones neumórficos */
+.neu-card {
+  background: var(--bg-light);
+  border-radius: 16px;
+  box-shadow:
+    8px 8px 16px #c5cbd6,
+    -8px -8px 16px #ffffff;
+  transition: 0.3s ease;
+}
+
+.neu-card:hover {
+  box-shadow:
+    inset 8px 8px 16px #c5cbd6,
+    inset -8px -8px 16px #ffffff;
+}
+
+.neu-input {
+  background: var(--bg-light);
+  border-radius: 12px;
+  box-shadow:
+    inset 4px 4px 8px #c5cbd6,
+    inset -4px -4px 8px #ffffff;
+  border: none;
+  padding: 12px 16px;
+  outline: none;
+  width: 100%;
+  transition: 0.2s ease;
+}
+
+.neu-input:focus {
+  box-shadow:
+    2px 2px 6px #c5cbd6,
+    -2px -2px 6px #ffffff;
+}
+
+.neu-button {
+  background: var(--accent);
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  padding: 10px 20px;
+  box-shadow:
+    4px 4px 8px rgba(0, 0, 0, 0.15),
+    -4px -4px 8px rgba(255, 255, 255, 0.7);
+  transition: 0.2s ease;
+}
+
+.neu-button:hover {
+  box-shadow:
+    inset 4px 4px 6px rgba(0, 0, 0, 0.2),
+    inset -4px -4px 6px rgba(255, 255, 255, 0.8);
+}

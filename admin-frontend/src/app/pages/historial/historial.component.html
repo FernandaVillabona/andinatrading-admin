@@ -1,0 +1,130 @@
+<div class="dashboard-container" *ngIf="!loading; else cargando">
+  <main class="main-content">
+
+    <!-- 🟣 Header -->
+    <header class="dashboard-header">
+      <div class="header-left">
+        <h2>Historial del sistema</h2>
+        <div class="greeting">
+          <p class="welcome">Bienvenido, <strong>{{ nombreUsuario }}</strong></p>
+          <p class="time">{{ horaActual }} | {{ zonaHoraria }}</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <app-clock></app-clock>
+      </div>
+    </header>
+
+    <!-- 📊 Gráficas en tarjetas -->
+<!-- 📊 Gráficas en tarjetas -->
+<section class="charts-grid">
+  <div class="chart-card">
+    <h4>Eventos por tipo</h4>
+    <canvas id="chartTipo"></canvas>
+  </div>
+
+  <div class="chart-card">
+    <h4>Eventos por módulo</h4>
+    <canvas id="chartModulo"></canvas>
+  </div>
+
+  <div class="chart-card">
+    <h4>Actividad últimos 30 días</h4>
+    <canvas id="chartActividad"></canvas>
+  </div>
+</section>
+
+
+    <!-- 📋 Tabla con barra de búsqueda -->
+    <section class="neu-section">
+
+
+      <div class="filters-bar">
+  <div class="search-bar">
+    <input
+      type="text"
+      placeholder="🔍 Buscar en el historial..."
+      [(ngModel)]="filtro"
+      (input)="aplicarFiltro()"
+    />
+  </div>
+
+  <div class="type-pills">
+    <button
+      class="pill"
+      [class.active]="filtroTipo === ''"
+      (click)="setTipo('')"
+    >Todos</button>
+
+    <button
+      class="pill"
+      [class.active]="filtroTipo === 'CREACION'"
+      (click)="setTipo('CREACION')"
+    >Creación</button>
+
+    <button
+      class="pill"
+      [class.active]="filtroTipo === 'MODIFICACION'"
+      (click)="setTipo('MODIFICACION')"
+    >Modificación</button>
+
+    <button
+      class="pill"
+      [class.active]="filtroTipo === 'ELIMINACION'"
+      (click)="setTipo('ELIMINACION')"
+    >Eliminación</button>
+
+    <button
+      class="pill"
+      [class.active]="filtroTipo === 'RESPALDO'"
+      (click)="setTipo('RESPALDO')"
+    >Respaldo</button>
+  </div>
+</div>
+
+
+      <table class="neu-table" *ngIf="historialFiltrado.length > 0; else sinDatos">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Usuario</th>
+            <th>Descripción</th>
+            <th>Tipo</th>
+            <th>Módulo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let evento of historialFiltrado">
+<td>{{ evento.fecha_evento | date:'dd/MM/yy, hh:mm a':'America/Bogota' }}</td>
+            <td>{{ evento.usuario }}</td>
+            <td>{{ evento.descripcion }}</td>
+            <td>
+  <span class="tipo-badge" [ngClass]="getTipoClass(evento.tipo_evento)">
+    {{ evento.tipo_evento }}
+  </span>
+</td>
+            <td>
+              <span class="modulo-badge" [ngClass]="getModuloClass(evento.modulo)">
+                {{ evento.modulo }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <ng-template #sinDatos>
+        <p>No hay registros que coincidan con tu búsqueda.</p>
+      </ng-template>
+    </section>
+
+  </main>
+</div>
+
+<ng-template #cargando>
+  <div class="loading-container">
+    <div class="loader-card">
+      <div class="circle"></div>
+      <div class="text">Cargando historial...</div>
+    </div>
+  </div>
+</ng-template>

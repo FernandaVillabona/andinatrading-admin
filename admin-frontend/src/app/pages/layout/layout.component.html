@@ -1,0 +1,58 @@
+<div class="layout">
+  <!-- 🟣 Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo-wrapper">
+        <img src="assets/logoandinatrading.png" alt="Andina Trading" />
+      </div>
+      <h2>Andina Trading</h2>
+    </div>
+
+    <div class="user-info">
+      <i class="bi bi-person-circle user-icon"></i>
+      <!-- 🔹 Mostrar nombre real del usuario -->
+      <p class="username">{{ nombreUsuario }}</p>
+    </div>
+
+    <nav class="menu">
+      <!-- ✅ Ajuste de rutas -->
+      <a routerLink="/admin/dashboard" routerLinkActive="active" class="menu-item">
+        <i class="bi bi-house-door-fill"></i>
+        <span>Inicio</span>
+      </a>
+
+      <a routerLink="/admin/logs" routerLinkActive="active" class="menu-item">
+        <i class="bi bi-graph-up"></i>
+        <span>Logs del sistema</span>
+      </a>
+
+      <a routerLink="/admin/backups" routerLinkActive="active" class="menu-item">
+        <i class="bi bi-hdd-stack"></i>
+        <span>Backups</span>
+      </a>
+
+      <a routerLink="/admin/historial" routerLinkActive="active" class="menu-item">
+        <i class="bi bi-clock-history"></i>
+        <span>Historial</span>
+      </a>
+
+      <a routerLink="/admin/usuarios" routerLinkActive="active" class="menu-item">
+        <i class="bi bi-people-fill"></i>
+        <span>Usuarios</span>
+      </a>
+       <a routerLink="/admin/analisis" routerLinkActive="active" class="menu-item">
+        <i class="bi bi-people-fill"></i>
+        <span>Analisis</span>
+      </a>
+    </nav>
+
+    <button class="logout-btn" (click)="logout()">
+      <i class="bi bi-box-arrow-right"></i> Salir
+    </button>
+  </aside>
+
+  <!-- 🧩 Contenido principal -->
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

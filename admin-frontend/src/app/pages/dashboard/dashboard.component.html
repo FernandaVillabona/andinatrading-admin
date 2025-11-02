@@ -1,0 +1,124 @@
+<div class="dashboard-container" *ngIf="!loading; else cargando">
+  <main class="main-content">
+
+    <!-- 🟣 Header principal -->
+    <header class="dashboard-header">
+      <div class="header-left">
+        <h2>Panel de control – Administrador</h2>
+        <div class="greeting">
+          <p class="welcome">Bienvenido, <strong>{{ nombreUsuario }}</strong></p>
+          <p class="time">{{ horaActual }} | {{ zonaHoraria }}</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <app-clock></app-clock>
+      </div>
+    </header>
+
+    <!-- 🟢 Resumen general -->
+<section class="neu-section">
+  <div class="stats">
+    <!-- 🟦 Administradores -->
+    <div class="stat-card">
+      <i class="bi bi-person-badge-fill icon"></i>
+      <h3>{{ data.resumen?.admins || 0 }}</h3>
+      <p>Administradores</p>
+    </div>
+
+    <!-- 🟣 Comisionistas -->
+    <div class="stat-card">
+      <i class="bi bi-person-video3 icon"></i>
+      <h3>{{ data.resumen?.comisionistas || 0 }}</h3>
+      <p>Comisionistas</p>
+    </div>
+
+    <!-- 🟢 Inversionistas -->
+    <div class="stat-card">
+      <i class="bi bi-people-fill icon"></i>
+      <h3>{{ data.resumen?.inversionistas || 0 }}</h3>
+      <p>Inversionistas</p>
+    </div>
+
+    <!-- 🟠 Órdenes totales -->
+    <div class="stat-card">
+      <i class="bi bi-cash-coin icon"></i>
+      <h3>{{ data.resumen?.ordenes || 0 }}</h3>
+      <p>Órdenes totales</p>
+    </div>
+  </div>
+</section>
+
+    <!-- 🟡 Logs recientes -->
+<section class="neu-section">
+  <h3 class="events-title">Últimos logs</h3>
+  <table class="neu-table" *ngIf="data.actividad?.logs_recientes?.length > 0; else sinLogs">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Usuario</th>
+        <th>Acción</th>
+        <th>Módulo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let log of data.actividad.logs_recientes">
+        <td>{{ log.fecha | date:'short' }}</td>
+        <td>{{ log.usuario }}</td>
+        <td>{{ log.accion }}</td>
+       <td>
+  <span class="modulo-badge" [ngClass]="getModuloClass(log.modulo)">
+    {{ log.modulo }}
+  </span>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <ng-template #sinLogs>
+    <p>No hay registros recientes.</p>
+  </ng-template>
+</section>
+
+
+    <!-- 🟠 Historial reciente -->
+<section class="neu-section">
+  <h3 class="events-title">Historial reciente</h3>
+  <table class="neu-table" *ngIf="data.actividad?.historial_reciente?.length > 0; else sinHistorial">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Usuario</th>
+        <th>Descripción</th>
+        <th>Módulo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let h of data.actividad.historial_reciente">
+        <td>{{ h.fecha_evento | date:'short' }}</td>
+        <td>{{ h.usuario }}</td>
+        <td>{{ h.descripcion }}</td>
+        <td>
+  <span class="modulo-badge" [ngClass]="getModuloClass(h.modulo)">
+    {{ h.modulo }}
+  </span>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <ng-template #sinHistorial>
+    <p>No hay actividad reciente.</p>
+  </ng-template>
+</section>
+
+
+  </main>
+</div>
+
+<!-- 🌀 Loader -->
+<ng-template #cargando>
+  <div class="loading-container">
+    <div class="loader-card">
+      <div class="circle"></div>
+      <div class="text">Cargando panel...</div>
+    </div>
+  </div>
+</ng-template>

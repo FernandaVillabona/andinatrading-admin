@@ -1,0 +1,546 @@
+:root {
+  --bg-light: #e9ecf7;
+  --bg-dark: #d4d8f0;
+  --accent: #d881a3;
+  --text: #232946;
+  --shadow-dark: rgba(0, 0, 0, 0.15);
+  --shadow-light: rgba(255, 255, 255, 0.8);
+}
+
+/* 🌗 Contenedor principal */
+.login-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #d4d8f0, #e8ebf7, #d8e1f3);
+  background-size: 400% 400%;
+  animation: bgMove 15s ease infinite;
+  font-family: "Segoe UI", sans-serif;
+  color: var(--text);
+  letter-spacing: 0.5px;
+}
+
+@keyframes bgMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 🩶 Línea divisoria central */
+.login-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(120, 130, 200, 0.3),
+    rgba(255, 255, 255, 0.2),
+    rgba(216, 129, 163, 0.3)
+  );
+  filter: blur(0.6px);
+}
+
+/* 🟣 Panel izquierdo */
+.left-panel {
+  width: 50%;
+  background: linear-gradient(145deg, #c4c8e0, #aeb3d0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  box-shadow: inset -6px -6px 12px var(--shadow-light),
+              inset 6px 6px 12px var(--shadow-dark);
+  transition: background 0.5s ease;
+}
+
+.branding {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  z-index: 2;
+}
+
+/* 🌕 Logo neumórfico */
+.logo-container {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.logo-wrapper {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+  box-shadow:
+    12px 12px 24px rgba(0, 0, 0, 0.2),
+    -12px -12px 24px rgba(255, 255, 255, 0.8);
+  transition: all 0.4s ease;
+}
+
+.logo-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  z-index: 0;
+  filter: blur(20px);
+}
+
+.logo-wrapper:hover {
+  transform: translateY(-4px);
+  background: linear-gradient(145deg, #dfe3f3, #cfd3e8);
+  box-shadow:
+    16px 16px 32px rgba(0, 0, 0, 0.25),
+    -16px -16px 32px rgba(255, 255, 255, 0.85);
+}
+
+.logo {
+  position: relative;
+  z-index: 1;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.25));
+  transition: transform 0.4s ease;
+}
+
+.logo-wrapper:hover .logo {
+  transform: scale(1.07);
+}
+
+/* 🩵 Tipografía */
+.title {
+  font-size: 2.4rem;
+  margin-bottom: 1rem;
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-shadow:
+    1px 1px 2px rgba(0, 0, 0, 0.1),
+    -1px -1px 2px rgba(255, 255, 255, 0.6);
+}
+
+.subtitle {
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(35, 41, 70, 0.8);
+  margin-bottom: 1.5rem;
+  text-shadow:
+    0.5px 0.5px 1px rgba(0, 0, 0, 0.05),
+    -0.5px -0.5px 1px rgba(255, 255, 255, 0.4);
+}
+
+.divider {
+  width: 80px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 10px;
+  margin: 1rem 0;
+}
+
+.tagline {
+  font-size: 0.9rem;
+  color: rgba(35, 41, 70, 0.6);
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+/* ✨ Quote neumórfico */
+.quote-box {
+  background: var(--bg-light);
+  box-shadow:
+    inset -4px -4px 8px var(--shadow-light),
+    inset 4px 4px 8px var(--shadow-dark);
+  border-radius: 14px;
+  padding: 1rem 1.5rem;
+  max-width: 300px;
+}
+
+.quote {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--text);
+  opacity: 0.85;
+}
+
+/* ⚪ Panel derecho */
+.right-panel {
+  width: 50%;
+  background: linear-gradient(145deg, #eef0fa, #d9dcf0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: inset 6px 6px 12px var(--shadow-dark),
+              inset -6px -6px 12px var(--shadow-light);
+  transition: background 0.5s ease;
+}
+
+/* 🧩 Tarjeta del login */
+.neu-card {
+  background: var(--bg-light);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  width: 360px;
+  text-align: center;
+  box-shadow:
+    10px 10px 20px var(--shadow-dark),
+    -10px -10px 20px var(--shadow-light);
+  transition: 0.3s ease;
+  animation: fadeInUp 0.8s ease;
+}
+
+.neu-card:hover {
+  transform: translateY(-5px);
+  box-shadow:
+    8px 8px 16px rgba(0, 0, 0, 0.25),
+    -8px -8px 16px rgba(255, 255, 255, 0.85);
+}
+
+/* 🩷 Título y subtítulo del form */
+.form-title {
+  font-size: 1.8rem;
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-shadow:
+    0.5px 0.5px 1px rgba(0, 0, 0, 0.08),
+    -0.5px -0.5px 1px rgba(255, 255, 255, 0.5);
+}
+
+.form-subtitle {
+  font-size: 0.95rem;
+  color: rgba(35, 41, 70, 0.75);
+  margin-bottom: 1.5rem;
+}
+
+/* Inputs neumórficos */
+.input-wrapper {
+  position: relative;
+  margin-bottom: 1.2rem;
+}
+
+.icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a09fb3;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  opacity: 0.9;
+  transition: color 0.2s ease;
+}
+
+.input-wrapper:focus-within .icon {
+  color: var(--accent);
+}
+
+.neu-input-inset {
+  width: 100%;
+  padding: 12px 16px 12px 48px;
+  font-size: 0.95rem;
+  border-radius: 9999px;
+  border: none;
+  outline: none;
+  background: var(--bg-light);
+  color: var(--text);
+  box-shadow:
+    inset 6px 6px 12px rgba(0, 0, 0, 0.12),
+    inset -6px -6px 12px rgba(255, 255, 255, 0.85);
+  transition: all 0.2s ease;
+}
+
+.neu-input-inset:focus {
+  box-shadow:
+    inset 3px 3px 6px rgba(0, 0, 0, 0.2),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.9);
+  background: #eef0fa;
+}
+
+.neu-input-inset::placeholder {
+  color: rgba(35, 41, 70, 0.5);
+  font-style: italic;
+}
+
+/*  Botón neumórfico */
+.neu-button {
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  box-shadow:
+    -4px -4px 8px rgba(255, 255, 255, 0.6),
+    4px 4px 8px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease-in-out;
+}
+
+.neu-button:hover {
+  background: linear-gradient(135deg, #b07bd6, #d881a3);
+  box-shadow:
+    inset 2px 2px 6px rgba(0, 0, 0, 0.2),
+    inset -2px -2px 6px rgba(255, 255, 255, 0.8);
+}
+
+.neu-button:active {
+  transform: scale(0.97);
+}
+.neu-button:disabled {
+  background: linear-gradient(145deg, #d4d8f0, #c1c5d8);
+  color: #aaa;
+  cursor: no-drop; /* Más limpio que not-allowed */
+  box-shadow:
+    inset 4px 4px 8px rgba(0, 0, 0, 0.08),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.6);
+  transform: none !important;
+}
+
+/* 💬 Links */
+.forgot-link {
+  display: block;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: rgba(35, 41, 70, 0.6);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.forgot-link:hover {
+  color: var(--accent);
+}
+
+/* 🌈 Animaciones */
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.dynamic-quote {
+  opacity: 0.8;
+  animation: fadeQuote 5s ease-in-out infinite;
+}
+
+@keyframes fadeQuote {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* 🧾 Footer */
+.login-footer {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  text-align: left;
+  font-size: 0.85rem;
+  color: #666;
+  opacity: 0.7;
+}
+
+/* 📱 Responsivo */
+@media (max-width: 900px) {
+  .login-container {
+    flex-direction: column;
+  }
+
+  .left-panel,
+  .right-panel {
+    width: 100%;
+    height: 50%;
+  }
+
+  .form-card {
+    width: 85%;
+  }
+
+  .login-container::before {
+    display: none;
+  }
+}
+
+.neu-panel {
+  background: var(--bg-light);
+  padding: 3rem 2.5rem;
+  border-radius: 24px;
+  width: 380px;
+  text-align: center;
+  box-shadow:
+    12px 12px 24px rgba(0, 0, 0, 0.2),
+    -12px -12px 24px rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.neu-panel:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    8px 8px 16px rgba(0, 0, 0, 0.25),
+    -8px -8px 16px rgba(255, 255, 255, 0.85);
+}
+
+/* ✨ Sutil brillo ambiental alrededor del panel */
+.neu-panel::before {
+  content: '';
+  position: absolute;
+  inset: -10px;
+  border-radius: 28px;
+
+  z-index: -1;
+  filter: blur(20px);
+}
+
+//animacion paneles
+
+.login-container {
+  perspective: 1000px;
+}
+
+.left-panel,
+.right-panel {
+  transition: all 0.6s ease;
+  transform-origin: center;
+}
+
+/* 🪄 Efecto al pasar el mouse sobre un panel */
+.left-panel:hover,
+.right-panel:hover {
+  transform: scale(1.03);
+  filter: brightness(1.05);
+  z-index: 3;
+}
+
+/* 💤 El panel opuesto se atenúa */
+.left-panel:hover ~ .right-panel {
+  transform: scale(0.98);
+  filter: brightness(0.9);
+}
+
+.right-panel:hover {
+  transform: scale(1.03);
+  filter: brightness(1.05);
+  z-index: 3;
+}
+
+.right-panel:hover ~ .left-panel {
+  transform: scale(0.98);
+  filter: brightness(0.9);
+}
+
+/* 🔆 Transición suave en el fondo al hacer hover */
+.left-panel:hover,
+.right-panel:hover {
+  box-shadow:
+    inset -8px -8px 16px var(--shadow-light),
+    inset 8px 8px 16px var(--shadow-dark);
+}
+
+/* 💡 Luz dinámica por panel (azul / rosado) */
+.left-panel,
+.right-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efecto de luz neumórfica */
+.left-panel::after,
+.right-panel::after {
+  content: "";
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  width: 300px;
+  height: 300px;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.4s ease;
+  opacity: 0;
+  filter: blur(40px);
+}
+
+/* 🩵 Luz azul para el panel izquierdo */
+.left-panel::after {
+  background: radial-gradient(circle, rgba(148, 187, 255, 0.35), transparent 70%);
+}
+
+/* 🌸 Luz rosada para el panel derecho */
+.right-panel::after {
+  background: radial-gradient(circle, rgba(216, 129, 163, 0.35), transparent 70%);
+}
+
+/* 🔆 Activa el brillo al pasar el mouse */
+.left-panel:hover::after,
+.right-panel:hover::after {
+  opacity: 1;
+}
+
+
+/* 💼 Subtítulo principal: “Panel administrativo” */
+.panel-subtitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1.4rem;
+  margin-top: 0.3rem;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(145deg, #e9ecf7, #d4d8f0);
+  border-radius: 30px;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  box-shadow:
+    inset -3px -3px 6px rgba(255, 255, 255, 0.9),
+    inset 3px 3px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+
+/* ✨ Animación al pasar el mouse */
+.panel-subtitle:hover {
+  transform: scale(1.05);
+  box-shadow:
+    inset -4px -4px 8px rgba(255, 255, 255, 1),
+    inset 4px 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.panel-subtitle:hover i {
+  transform: rotate(25deg);
+
+}
+
+.error-msg {
+  color: #c0392b;
+  font-weight: 600;
+  margin-top: 10px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1),
+              inset -2px -2px 5px rgba(255, 255, 255, 0.8);
+}
+
