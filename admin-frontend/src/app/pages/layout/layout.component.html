@@ -10,8 +10,12 @@
 
     <div class="user-info">
       <i class="bi bi-person-circle user-icon"></i>
-      <!-- 🔹 Mostrar nombre real del usuario -->
-      <p class="username">{{ nombreUsuario }}</p>
+      <p class="username">
+        {{ nombreUsuario }}
+        <button class="edit-name-btn" (click)="openProfileModal()" title="Editar perfil" aria-label="Editar perfil">
+          <i class="bi bi-pencil-square"></i>
+        </button>
+      </p>
     </div>
 
     <nav class="menu">
@@ -40,9 +44,10 @@
         <i class="bi bi-people-fill"></i>
         <span>Usuarios</span>
       </a>
-       <a routerLink="/admin/analisis" routerLinkActive="active" class="menu-item">
+
+      <a routerLink="/admin/analisis" routerLinkActive="active" class="menu-item">
         <i class="bi bi-people-fill"></i>
-        <span>Analisis</span>
+        <span>Análisis</span>
       </a>
     </nav>
 
@@ -56,3 +61,79 @@
     <router-outlet></router-outlet>
   </main>
 </div>
+
+<!-- ===== Modal Perfil (colocado al final del HTML) ===== -->
+<!-- ===== Modal Perfil ===== -->
+<div class="neo-modal__backdrop" *ngIf="showProfileModal">
+  <div class="neo-modal" role="dialog" aria-modal="true" aria-labelledby="perfilTitle">
+    <div class="neo-modal__header">
+      <h3 id="perfilTitle">Editar perfil</h3>
+      <button class="neo-close" (click)="closeProfileModal()" aria-label="Cerrar">✕</button>
+    </div>
+
+    <!-- Tabs elegantes -->
+    <div class="neo-tabs neo-tabs--segmented" [attr.data-active]="tab">
+      <button
+        class="seg-pill"
+        [class.active]="tab==='nombre'"
+        (click)="tab='nombre'"
+        aria-controls="tab-nombre"
+      >
+        <i class="bi bi-person"></i> Nombre
+      </button>
+      <button
+        class="seg-pill"
+        [class.active]="tab==='password'"
+        (click)="tab='password'"
+        aria-controls="tab-password"
+      >
+        <i class="bi bi-shield-lock"></i> Contraseña
+      </button>
+      <span class="seg-indicator"></span>
+    </div>
+
+    <div class="neo-modal__body">
+      <!-- Tab Nombre -->
+      <div id="tab-nombre" *ngIf="tab==='nombre'">
+        <div class="form-group">
+          <label>Nombre completo</label>
+          <input class="neu-input-inset" type="text" [(ngModel)]="formNombre" placeholder="Ej. Ana Pérez" />
+        </div>
+        <p class="hint">Este nombre se mostrará en el panel.</p>
+        <p class="error" *ngIf="msgError">{{ msgError }}</p>
+        <p class="ok" *ngIf="msgOk">{{ msgOk }}</p>
+      </div>
+
+      <!-- Tab Password -->
+      <div id="tab-password" *ngIf="tab==='password'">
+        <div class="form-group">
+          <label>Contraseña actual</label>
+          <input class="neu-input-inset" type="password" [(ngModel)]="pwd.actual" />
+        </div>
+        <div class="form-group">
+          <label>Nueva contraseña</label>
+          <input class="neu-input-inset" type="password" [(ngModel)]="pwd.nueva" />
+        </div>
+        <div class="form-group">
+          <label>Confirmar nueva contraseña</label>
+          <input class="neu-input-inset" type="password" [(ngModel)]="pwd.confirmar" />
+        </div>
+        <p class="hint">Mínimo 8 caracteres.</p>
+        <p class="error" *ngIf="msgError">{{ msgError }}</p>
+        <p class="ok" *ngIf="msgOk">{{ msgOk }}</p>
+      </div>
+    </div>
+
+    <!-- Botones alineados a la derecha -->
+    <div class="neo-modal__footer neo-modal__footer--right">
+      <button class="neo-btn" (click)="closeProfileModal()">Cancelar</button>
+      <button class="neo-btn neo-btn--download" *ngIf="tab==='nombre'" [disabled]="saving" (click)="guardarNombre()">
+        {{ saving ? 'Guardando…' : 'Guardar nombre' }}
+      </button>
+      <button class="neo-btn neo-btn--download" *ngIf="tab==='password'" [disabled]="saving" (click)="cambiarPassword()">
+        {{ saving ? 'Actualizando…' : 'Cambiar contraseña' }}
+      </button>
+    </div>
+  </div>
+</div>
+

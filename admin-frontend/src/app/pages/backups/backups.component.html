@@ -1,1 +1,111 @@
-<p>backups works!</p>
+<div class="dashboard-container" *ngIf="!loading; else cargando">
+  <main class="main-content">
+    <!-- 🟣 Header -->
+    <header class="dashboard-header">
+      <div class="header-left">
+        <h2>Gestión de Backups</h2>
+        <div class="greeting">
+          <p class="welcome">Bienvenido, <strong>{{ nombreUsuario }}</strong></p>
+          <p class="time">{{ horaActual }} | {{ zonaHoraria }}</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <app-clock></app-clock>
+      </div>
+    </header>
+
+    <!-- 🔧 Barra de controles -->
+    <section class="neu-section">
+      <div class="filters-bar">
+        <div class="search-bar">
+          <input
+            type="text"
+            class="neu-input-inset"
+            placeholder="🔍 Buscar backup..."
+            [(ngModel)]="filtroTexto"
+            (input)="aplicarFiltro()"
+          />
+        </div>
+
+        <div class="other-controls">
+          <button (click)="generarBackup()" [disabled]="creando" class="btn-primary">
+            {{ creando ? 'Creando Backup...' : '🗃️ Crear Backup' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- 📋 Tabla de Backups -->
+      <table class="neu-table" *ngIf="backups.length > 0; else sinBackups">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Archivo</th>
+            <th>Tipo</th>
+            <th>Estado</th>
+            <th>Usuario</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let b of backups">
+            <td>{{ b.id }}</td>
+            <td>{{ b.nombre_archivo }}</td>
+            <td>
+              <span class="tipo-badge" [ngClass]="b.tipo_backup === 'MANUAL' ? 'tipo-creacion' : 'tipo-modificacion'">
+                {{ b.tipo_backup }}
+              </span>
+            </td>
+            <td [ngClass]="{
+              'text-green-600': b.estado === 'EXITOSO',
+              'text-yellow-500': b.estado === 'EN_PROCESO',
+              'text-red-600': b.estado === 'FALLIDO'
+            }">
+              {{ b.estado }}
+            </td>
+            <td>{{ b.usuario || '—' }}</td>
+            <td>{{ b.fecha_creacion | date:'dd/MM/yy, HH:mm': zonaHoraria }}</td>
+<td>
+  <button
+    class="btn-secondary"
+    (click)="descargarBackup(b)"
+    [disabled]="isDownloading(b.id)"
+    [attr.aria-busy]="isDownloading(b.id) ? 'true' : null"
+    [attr.aria-label]="'Descargar backup ' + b.nombre_archivo"
+    title="Descargar backup"
+  >
+    <span *ngIf="!isDownloading(b.id)">⬇️ </span>
+    <span *ngIf="isDownloading(b.id)" class="spinner"></span>
+    <span *ngIf="isDownloading(b.id)"> Descargando…</span>
+  </button>
+
+  <button
+    class="btn-danger"
+    (click)="eliminarBackup(b.id)"
+    [attr.aria-label]="'Eliminar backup ' + b.nombre_archivo"
+    title="Eliminar backup"
+  >
+    🗑️
+  </button>
+</td>
+
+
+          </tr>
+        </tbody>
+      </table>
+
+      <ng-template #sinBackups>
+        <p class="text-center py-4 text-gray-500">No hay backups registrados.</p>
+      </ng-template>
+    </section>
+  </main>
+</div>
+
+<ng-template #cargando>
+  <div class="loading-container">
+    <div class="loader-card">
+      <div class="circle"></div>
+      <div class="text">Cargando backups...</div>
+    </div>
+  </div>
+</ng-template>

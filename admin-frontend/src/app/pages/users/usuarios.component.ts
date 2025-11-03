@@ -209,4 +209,60 @@ export class UsersComponent implements OnInit, OnDestroy {
       default: return 'tipo-default';
     }
   }
+
+
+  showInviteModal = false;
+inviteNombre = '';
+inviteCorreo = '';
+inviteLoading = false;
+inviteError = '';
+inviteOk = '';
+
+openInviteModal() {
+  this.inviteNombre = '';
+  this.inviteCorreo = '';
+  this.inviteLoading = false;
+  this.inviteError = '';
+  this.inviteOk = '';
+  this.showInviteModal = true;
+}
+
+closeInviteModal() {
+  if (this.inviteLoading) return; // evita cerrar durante envío
+  this.showInviteModal = false;
+}
+
+private isEmail(s: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((s || '').trim());
+}
+
+isInviteValid(): boolean {
+  return (this.inviteNombre || '').trim().length > 2 && this.isEmail(this.inviteCorreo);
+}
+
+submitInvite() {
+  if (!this.isInviteValid() || this.inviteLoading) return;
+  this.inviteLoading = true;
+  this.inviteError = '';
+  this.inviteOk = '';
+
+  this.usuariosService.inviteAdmin(
+    this.inviteNombre.trim(),
+    this.inviteCorreo.trim().toLowerCase()
+  ).subscribe({
+    next: (res) => {
+      this.inviteOk = res.message || 'Invitación enviada';
+      // refresca lista de usuarios por si quieres ver el nuevo admin ya mismo
+      this.cargarLista();
+      // opcional: cierra el modal tras un pequeño delay
+      setTimeout(() => this.closeInviteModal(), 800);
+      this.inviteLoading = false;
+    },
+    error: (err) => {
+      console.error('❌ Error invitando admin:', err);
+      this.inviteError = err?.error?.error || 'No se pudo enviar la invitación';
+      this.inviteLoading = false;
+    }
+  });
+}
 }

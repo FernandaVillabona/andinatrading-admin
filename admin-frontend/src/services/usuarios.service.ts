@@ -1,9 +1,9 @@
+// src/app/services/usuarios.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../environment/environment';
 
-// 🔹 Tipos
 export type TipoUsuario = 'ADMIN' | 'COMISIONISTA' | 'INVERSIONISTA';
 
 export interface Usuario {
@@ -20,6 +20,22 @@ export interface Usuario {
   porcentaje_comision?: number | null;
 }
 
+interface InviteAdminPayload {
+  nombre_completo: string;
+  correo: string;
+}
+
+interface InviteAdminResponse {
+  message: string;
+  data: {
+    id: number;
+    nombre_completo: string;
+    correo: string;
+    tipo_usuario: 'ADMIN';
+    estado: 'ACTIVO';
+  };
+}
+
 export interface UsuarioResumen {
   admins: number;
   comisionistas: number;
@@ -29,44 +45,53 @@ export interface UsuarioResumen {
 
 @Injectable({ providedIn: 'root' })
 export class UsuariosService {
+  // Backend: app.use("/api/admin/usuarios", usersAdminRoutes)
   private apiUrl = `${environment.apiUrl}/admin/usuarios`;
 
   constructor(private http: HttpClient) {}
 
-  // ✅ Headers con JWT
-  private getHeaders() {
+  // ✅ Solo envía Authorization si hay token
+  private authHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
-    return {
-      headers: new HttpHeaders({
-        Authorization: token ? `Bearer ${token}` : '',
-      }),
-    };
+    return token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : new HttpHeaders();
   }
 
-  // 🔹 Resumen de totales
+  /** ✉️ Invitar admin */
+  inviteAdmin(nombre_completo: string, correo: string): Observable<InviteAdminResponse> {
+    const payload: InviteAdminPayload = { nombre_completo, correo };
+    return this.http.post<InviteAdminResponse>(
+      `${this.apiUrl}/admins/invite`,
+      payload,
+      { headers: this.authHeaders() }
+    );
+  }
+
+  /** --- Extras que ya tenías --- */
   getResumen(): Observable<UsuarioResumen> {
-    return this.http.get<UsuarioResumen>(`${this.apiUrl}/resumen/contadores`, this.getHeaders());
+    return this.http.get<UsuarioResumen>(
+      `${this.apiUrl}/resumen/contadores`,
+      { headers: this.authHeaders() }
+    );
   }
 
-  // 🔹 Administradores
   getAdmins(): Observable<Usuario[]> {
-    return this.http.get<{ total: number; data: any[] }>(`${this.apiUrl}/admins`, this.getHeaders())
+    return this.http
+      .get<{ total: number; data: any[] }>(`${this.apiUrl}/admins`, { headers: this.authHeaders() })
       .pipe(map(res => res.data.map(u => this.normalizeFromRaw(u, 'ADMIN'))));
   }
 
-  // 🔹 Comisionistas
   getComisionistas(): Observable<Usuario[]> {
-    return this.http.get<{ total: number; data: any[] }>(`${this.apiUrl}/comisionistas`, this.getHeaders())
+    return this.http
+      .get<{ total: number; data: any[] }>(`${this.apiUrl}/comisionistas`, { headers: this.authHeaders() })
       .pipe(map(res => res.data.map(u => this.normalizeFromRaw(u, 'COMISIONISTA'))));
   }
 
-  // 🔹 Inversionistas
   getInversionistas(): Observable<Usuario[]> {
-    return this.http.get<{ total: number; data: any[] }>(`${this.apiUrl}/inversionistas`, this.getHeaders())
+    return this.http
+      .get<{ total: number; data: any[] }>(`${this.apiUrl}/inversionistas`, { headers: this.authHeaders() })
       .pipe(map(res => res.data.map(u => this.normalizeFromRaw(u, 'INVERSIONISTA'))));
   }
 
-  // 🔹 Normaliza distintos formatos del back a tu interfaz Usuario
   private normalizeFromRaw(raw: any, tipo: TipoUsuario): Usuario {
     switch (tipo) {
       case 'ADMIN':

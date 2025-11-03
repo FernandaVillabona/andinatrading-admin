@@ -105,3 +105,131 @@
     -6px -6px 12px var(--shadow-light);
 }
 .page-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+
+/* ===== Backdrop: negro translúcido a pantalla completa ===== */
+.neo-modal__backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);   /* cubre toda la pantalla */
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+}
+
+/* ===== Modal: lila con relieve y texto claro ===== */
+.neo-modal{
+  width: min(520px, 96vw);
+  border-radius: 18px;
+  color: #fff;
+  background: linear-gradient(165deg, #a78bfa 0%, #8b5cf6 65%, #7c3aed 100%); /* lila */
+  box-shadow:
+    0 24px 48px rgba(0,0,0,.45),
+    0 10px 20px rgba(0,0,0,.25),
+    inset -8px -8px 16px rgba(255,255,255,.10),  /* brillo alto-izq */
+    inset  8px  8px 20px rgba(0,0,0,.25);        /* sombra bajo-der */
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.10);
+}
+
+.neo-modal__header{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  h3{ margin:0; font-size:16px; font-weight:700; }
+}
+
+.neo-close{
+  background: transparent;
+  border: 0;
+  color: #fff;
+  opacity: .9;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  &:hover{ opacity: 1; }
+}
+
+.neo-modal__body{
+  padding: 16px 16px 4px;
+
+  .form-group{
+    display: grid; gap: 6px; margin-bottom: 12px;
+
+    label{ font-size: 13px; opacity: .95; }
+
+    /* ===== Input neuromórfico sobre lila ===== */
+    .neu-input-inset{
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 0;
+      background: #9e87fa;  /* un tono más claro que el panel */
+      color: #fff;
+      box-shadow:
+        inset 6px 6px 12px rgba(0,0,0,.25),
+        inset -6px -6px 12px rgba(255,255,255,.12);
+      outline: none;
+      transition: box-shadow .15s ease, filter .15s ease;
+
+      &::placeholder{ color: rgba(255,255,255,.75); }
+      &:focus{
+        box-shadow:
+          inset 4px 4px 10px rgba(0,0,0,.28),
+          inset -4px -4px 10px rgba(255,255,255,.18),
+          0 0 0 2px rgba(255,255,255,.18);
+        filter: brightness(1.02);
+      }
+    }
+  }
+
+  .hint{ font-size:12px; color: rgba(255,255,255,.85); }
+  .error{ color: #fecaca; font-size:13px; margin-top:8px; }
+  .ok{ color: #bbf7d0; font-size:13px; margin-top:8px; }
+}
+
+.neo-modal__footer{
+  display:flex; justify-content:flex-end; gap:8px;
+  padding: 12px 16px 16px;
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,0));
+}
+
+/* ===== Botones en el modal (neumórficos) ===== */
+.neo-btn{
+  appearance:none; border:0; border-radius:14px;
+  padding:8px 14px; font-weight:700; color:#fff; cursor:pointer;
+  background: rgba(255,255,255,.12);
+  box-shadow:
+    6px 6px 14px rgba(0,0,0,.25),
+    -6px -6px 14px rgba(255,255,255,.10);
+  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+
+  &:hover{
+    transform: translateY(-1px);
+    box-shadow:
+      8px 8px 18px rgba(0,0,0,.28),
+      -8px -8px 18px rgba(255,255,255,.12);
+  }
+  &:active{
+    transform: translateY(0);
+    box-shadow:
+      inset 6px 6px 14px rgba(0,0,0,.28),
+      inset -6px -6px 14px rgba(255,255,255,.12);
+  }
+  &:disabled{ opacity:.65; cursor:not-allowed; }
+}
+
+/* Primario (Enviar invitación) en azul para contraste */
+.neo-btn--download{
+  background: linear-gradient(145deg, #2563eb, #1e4fd1);
+  box-shadow:
+    0 10px 22px rgba(37,99,235,.35),
+    0 3px 8px rgba(0,0,0,.25);
+}
+
+/* Spinner visible en fondo oscuro/lila */
+.neo-spinner{
+  width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;
+  border-radius:50%; display:inline-block; animation: spin .6s linear infinite;
+}
+@keyframes spin{ to { transform: rotate(360deg); } }

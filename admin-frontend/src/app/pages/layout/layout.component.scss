@@ -210,3 +210,531 @@
   overflow-y: auto;
   background: var(--bg);
 }
+
+
+
+:root {
+  --bg: #e9ecf7;
+  --accent: #d881a3;
+  --sidebar-bg: #b9b4d4;
+  --text: #232946;
+  --shadow-dark: rgba(0, 0, 0, 0.25);
+  --shadow-light: rgba(255, 255, 255, 0.7);
+  --layout-start: #a493f2;  /* violeta medio, tono base */
+  --layout-mid:   #c7b8ff;  /* lavanda suave */
+  --layout-end:   #ebe4ff;  /* lavanda pálido casi blanco */
+}
+
+/* 🧩 Contenedor principal */
+.layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  font-family: "Segoe UI", sans-serif;
+
+  /* 🎨 Degradado con más contraste y movimiento */
+  background: linear-gradient(135deg, #8c84b8, #b9b4d4, #7a72a3);
+  background-size: 300% 300%;
+  animation: bgSoftFlow 12s ease-in-out infinite;
+
+  transition: background 0.4s ease;
+}
+
+/* 💫 Movimiento del degradado (más notorio) */
+@keyframes bgSoftFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 🟣 Sidebar fija */
+.sidebar {
+  width: 400px;
+  padding: 3rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  /* Fondo lavanda con leve gradiente */
+  background: linear-gradient(145deg, #8f8cb6, #5f5b97);
+  border-radius: 0 24px 24px 0;
+
+  /* Sombras que dan efecto de elevación */
+  box-shadow:
+    6px 0 18px rgba(0, 0, 0, 0.25),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.6),
+    inset 3px 3px 6px rgba(0, 0, 0, 0.15);
+
+  position: relative;
+  z-index: 10;
+}
+
+/* 💫 Línea divisoria neumórfica */
+.sidebar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -1px;
+  width: 2px;
+  height: 100%;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+}
+
+/* 🪶 Logo y marca */
+.logo-wrapper {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #7a72a3, #6b6494);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 1.5rem auto;
+  box-shadow:
+    inset -6px -6px 12px rgba(255, 255, 255, 0.2),
+    inset 6px 6px 12px rgba(0, 0, 0, 0.25),
+    4px 4px 8px rgba(0, 0, 0, 0.3),
+    -4px -4px 8px rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.logo-wrapper:hover {
+  transform: scale(1.05);
+  box-shadow:
+    8px 8px 16px rgba(0, 0, 0, 0.3),
+    -8px -8px 16px rgba(255, 255, 255, 0.15);
+}
+
+/* 📸 Imagen del logo perfectamente centrada */
+.logo-wrapper img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  display: block;
+}
+
+.brand {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  h2 {
+    font-size: 2rem;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+  }
+}
+
+/* 👤 Usuario */
+.user-info {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.user-icon {
+  font-size: 3rem;
+  color: #fff;
+}
+
+.username {
+  margin-top: 0.5rem;
+  font-weight: 500;
+  color: white;
+}
+
+/* 📋 Menú */
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  width: 100%;
+}
+
+/* 🎯 Ítems de menú */
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.9rem 1.2rem;
+  border-radius: 14px;
+  background: var(--sidebar-bg);
+  color: white;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow:
+    inset 4px 4px 8px rgba(255, 255, 255, 0.1),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover y activo */
+.menu-item:hover {
+  background: #c9c5e0;
+  color :#d881a3;
+}
+
+.menu-item.active {
+  background: #fff;
+  color: var(--accent);
+  box-shadow:
+    6px 6px 12px rgba(0, 0, 0, 0.25),
+    -6px -6px 12px rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  transform: translateY(-2px);
+}
+
+/* Iconos */
+.menu-item i {
+  font-size: 1.4rem;
+}
+
+/* 🔻 Botón logout */
+.logout-btn {
+  margin-top: auto;
+  background: linear-gradient(145deg, #975b87, #f0a8b9);
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: 0.9rem 1.2rem;
+  width: 100%;
+  border-radius: 16px;
+  box-shadow:
+    -4px -4px 8px rgba(255, 255, 255, 0.6),
+    4px 4px 8px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.logout-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* 🧭 Área de contenido principal */
+.content {
+  flex: 1;
+  margin-left: 10px;
+  padding: 2rem;
+  overflow-y: auto;
+  background: var(--bg);
+}
+
+/* ========== Botón editar junto al nombre ========== */
+.edit-name-btn{
+  appearance:none; border:0; border-radius:12px; line-height:1;
+  background: rgba(255,255,255,.14); color:#fff; padding:4px 8px; cursor:pointer;
+  box-shadow:
+    0 4px 10px var(--shadow-dark),
+    inset -1px -1px 2px rgba(255,255,255,.35),
+    inset 1px 1px 2px rgba(0,0,0,.18);
+  transition: transform .08s ease, filter .08s ease, box-shadow .12s ease;
+  i{ font-size:14px; }
+  &:hover{ filter:brightness(1.06); transform: translateY(-1px); }
+  &:active{ transform: translateY(0); box-shadow: inset 0 3px 10px rgba(0,0,0,.28); }
+}
+
+/* ========== BACKDROP DEL MODAL ========== */
+.neo-modal__backdrop{
+  position: fixed; inset: 0; z-index: 3000;
+  display:flex; align-items:center; justify-content:center;
+  padding: 24px;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(2px);
+  animation: neoFadeIn .12s ease-out;
+}
+
+/* ========== MODAL base (sólido #b9b4d4) ========== */
+.neo-modal{
+  width: 100%;
+  max-width: 560px;          /* base antes de overrides de tamaño */
+  border-radius: 18px;
+  overflow: hidden;
+  color: #232946;
+  background: #b9b4d4;       /* sólido */
+  box-shadow:
+    0 20px 40px rgba(0,0,0,.35),
+    inset 0 1px 0 rgba(255,255,255,.25);
+  transform: translateY(6px) scale(.98);
+  animation: neoPopIn .16s ease-out forwards;
+}
+
+.neo-modal__header,
+.neo-modal__footer{ border-color: rgba(35,41,70,.12); }
+
+.neo-modal__header{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(35,41,70,.12);
+  h3{ margin:0; font-size: 18px; font-weight: 800; letter-spacing:.2px; }
+}
+.neo-close{
+  appearance: none; border: 0; background: transparent; color: #232946;
+  font-size: 18px; line-height: 1; cursor: pointer; border-radius: 10px; padding: 6px 8px;
+  transition: background .12s ease;
+  &:hover{ background: rgba(35,41,70,.06); }
+}
+.neo-modal__body  { padding: 16px 18px; }
+.neo-modal__footer{ padding: 14px 18px; border-top: 1px solid rgba(35,41,70,.12); }
+
+
+
+/* ========== Inputs neuromórficos claros ========== */
+.form-group{ display:flex; flex-direction:column; gap:6px; margin-bottom:14px;
+  label{ font-weight:700; color:#232946; }
+}
+.neu-input-inset{
+  width: 100%; padding: 12px 14px; border-radius: 14px; border: 0; color:#232946; outline: none;
+  background: #dcd7f0;
+  box-shadow:
+    inset 2px 2px 6px rgba(0,0,0,.12),
+    inset -2px -2px 6px rgba(255,255,255,.55);
+  transition: box-shadow .12s ease, background .12s ease;
+  &::placeholder{ color: rgba(35,41,70,.6); }
+  &:focus{
+    background: #e8e4fb;
+    box-shadow:
+      inset 2px 2px 8px rgba(0,0,0,.16),
+      0 0 0 2px rgba(37,99,235,.45);
+  }
+}
+
+.hint { color:#3a3f66; opacity:.85; font-size:12px; margin-top:4px; }
+.error{ color:#b91c1c; font-size:13px; margin-top:6px; }
+.ok   { color:#166534; font-size:13px; margin-top:6px; }
+
+/* ========== OVERRIDES: tamaño + bordes + botones #6b6494 ========= */
+$neoBtn: #6b6494;
+
+/* Modal más grande y redondeado */
+.neo-modal{
+  max-width: 720px;        /* antes 560px */
+  border-radius: 26px;
+}
+
+/* Más padding */
+.neo-modal__header{ padding: 18px 22px; }
+.neo-modal__body  { padding: 20px 22px; }
+.neo-modal__footer{ padding: 16px 22px; }
+
+/* Inputs más suaves/redondos */
+.neu-input-inset{ border-radius: 18px; padding: 14px 16px; }
+
+/* Tabs un poco más grandes */
+.neo-tabs{
+  padding: 12px 22px;
+  button{ border-radius: 16px; padding: 10px 14px; }
+}
+
+
+/* Primario (acción) */
+.neo-btn--download{
+  background: linear-gradient(135deg, lighten($neoBtn, 4%), $neoBtn);
+  color:#fff;
+}
+
+/* Secundario (Cancelar) */
+.neo-btn:not(.neo-btn--download){
+  background: linear-gradient(135deg, lighten($neoBtn, 12%), lighten($neoBtn, 6%));
+  color:#fff;
+}
+
+/* Deshabilitado */
+.neo-btn[disabled]{ opacity:.7; filter: saturate(.85); cursor:not-allowed; }
+
+/* ========== Animaciones + responsive ========== */
+@keyframes neoFadeIn{ from{ opacity:0 } to{ opacity:1 } }
+@keyframes neoPopIn{ to{ transform: translateY(0) scale(1) } }
+
+@media (max-width: 480px){
+  .neo-modal{ max-width: 94vw; }
+  .neo-modal__body{ padding: 14px; }
+  .neo-modal__footer{ padding: 12px 14px; }
+  .neo-tabs{ padding: 8px 12px; }
+}
+
+
+/* Footer a la derecha */
+.neo-modal__footer--right{
+  display:flex;
+  justify-content:flex-end;
+  gap:12px;
+}
+
+/* Tabs tipo segmented control */
+.neo-tabs--segmented{
+  position:relative;
+  display:flex; gap:0; padding:12px 16px;
+  border-bottom:1px solid rgba(35,41,70,.12);
+  background: rgba(255,255,255,.08);
+  border-top-left-radius: 0; border-top-right-radius: 0;
+
+  .seg-pill{
+    position:relative;
+    z-index:1;
+    flex:0 0 auto;
+    padding:10px 16px;
+    border:0; cursor:pointer; font-weight:700;
+    background:transparent; color:#232946; border-radius:12px;
+    transition: color .15s ease, transform .08s ease;
+    display:flex; align-items:center; gap:8px;
+
+    &:hover{ transform: translateY(-1px); }
+    &.active{ color:#fff; }
+  }
+
+  /* Indicador deslizante */
+  .seg-indicator{
+    position:absolute;
+    z-index:0;
+    top:8px; bottom:8px;
+    width:140px;                       /* ancho de cada tab (ajústalo si cambias padding/texto) */
+    border-radius:14px;
+
+    transition: transform .22s cubic-bezier(.2,.8,.2,1);
+    transform: translateX(0);
+  }
+
+  /* Mueve el indicador según el tab activo */
+  &[data-active="password"] .seg-indicator{ transform: translateX(148px); } /* 140 + gap(8) */
+  &[data-active="nombre"]   .seg-indicator{ transform: translateX(0); }
+}
+
+/* (Opcional) Responsive del segmented */
+@media (max-width: 480px){
+  .neo-tabs--segmented .seg-indicator{ width: 120px; }
+  .neo-tabs--segmented[data-active="password"] .seg-indicator{ transform: translateX(128px); }
+}
+
+
+/* ===== Tabs sin color de fondo ni borde, texto morado ===== */
+$tabPurple: #6b6494;  // morado que estás usando en la UI
+
+.neo-tabs--segmented{
+  position: relative;
+  display: flex;
+  gap: 14px;                 /* más aire entre tabs */
+  padding: 12px 16px 6px;
+  border: 0;                 /* sin borde */
+  background: transparent;   /* sin fondo */
+
+  .seg-pill{
+    appearance: none;
+    border: 0;
+    background: transparent; /* sin fondo */
+    color: $tabPurple;       /* texto morado */
+    font-weight: 700;
+    padding: 8px 2px;        /* solo espacio vertical (sin “pill”) */
+    border-radius: 0;        /* sin esquinas */
+    cursor: pointer;
+    transition: color .15s ease, transform .08s ease;
+
+    /* estado activo: solo cambia el color (más intenso) */
+    &.active{
+      color: darken($tabPurple, 8%);
+    }
+
+    /* hover: sutil, sin fondo */
+    &:hover{
+      transform: translateY(-1px);
+      color: darken($tabPurple, 12%);
+    }
+    &:focus-visible{
+      outline: none;
+      text-decoration: underline; /* accesible sin agregar fondo/borde */
+      text-underline-offset: 3px;
+    }
+  }
+
+  /* Oculta el indicador deslizante y cualquier resto visual */
+  .seg-indicator{ display: none !important; }
+}
+
+/* Opcional: línea guía muy sutil debajo de la barra de tabs (puedes quitarla) */
+.neo-modal__body::before{
+  content: "";
+  display: block;
+  height: 1px;
+  margin: 0 16px 12px;
+  background: rgba(107,100,148,.18); /* morado con mucha transparencia */
+  border-radius: 1px;
+}
+
+
+/* ============================
+   Botones neumórficos (morado)
+   ============================ */
+$neo-base:  #6b6494;                 // color principal
+$neo-dark:  #5b557f;                 // un poco más oscuro
+$neo-lite:  #8a84b1;                 // un poco más claro
+
+.neo-btn{
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  user-select: none;
+
+  padding: 12px 18px;
+  border-radius: 18px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: .2px;
+  color: #fff;
+
+  /* cuerpo morado con gradiente suave */
+  background: linear-gradient(145deg, $neo-lite, $neo-base);
+
+  /* sombras neumórficas */
+  box-shadow:
+    8px 8px 18px rgba(0, 0, 0, .25),          /* sombra externa */
+    -6px -6px 12px rgba(255, 255, 255, .35),  /* luz externa */
+    inset 0 0 0 rgba(0,0,0,0);                /* reservado para active */
+
+  transition: transform .08s ease, filter .1s ease, box-shadow .15s ease;
+
+  &:hover{
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+  }
+
+  &:active{
+    transform: translateY(0);
+    /* efecto “presionado” */
+    box-shadow:
+      inset 8px 8px 14px rgba(0,0,0,.28),
+      inset -3px -3px 8px rgba(255,255,255,.25);
+  }
+
+  &:focus-visible{
+    outline: none;
+    box-shadow:
+      0 0 0 3px rgba(107,100,148,.18),
+      8px 8px 18px rgba(0, 0, 0, .25),
+      -6px -6px 12px rgba(255, 255, 255, .35);
+  }
+
+  &[disabled],
+  &[aria-busy="true"]{
+    opacity: .7;
+    filter: saturate(.85);
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+/* Variante de acción (Guardar/Cambiar): un poquito más intensa */
+.neo-btn--download{
+  background: linear-gradient(145deg, lighten($neo-base, 3%), $neo-dark);
+  box-shadow:
+    10px 10px 22px rgba(0, 0, 0, .27),
+    -8px -8px 16px rgba(255, 255, 255, .36);
+
+  &:hover{
+    filter: brightness(1.07);
+  }
+}

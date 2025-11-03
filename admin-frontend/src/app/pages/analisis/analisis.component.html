@@ -29,9 +29,7 @@
     <section class="neu-section" *ngIf="active==='ACCIONES'">
       <!-- 🔎 Filtros -->
       <div class="filters-bar">
-        <input class="neu-input-inset" placeholder="Empresa..."
-               [(ngModel)]="fAcciones.empresa" (keyup.enter)="loadTab('ACCIONES')" />
-        <input class="neu-input-inset" placeholder="Buscar en tabla..."
+        <input class="neu-input-inset" placeholder="Buscar por empresa o inversionista..."
                [(ngModel)]="fAcciones.q" (input)="applyAcciones()" />
         <label>Mostrar:
           <select [(ngModel)]="aLimit" (change)="applyAcciones()">
@@ -48,23 +46,23 @@
         <thead>
           <tr>
             <th>Empresa</th>
-            <th>Ticker</th>
-            <th>Precio</th>
-            <th>Variación %</th>
-            <th>Actualización</th>
+            <th>Inversionista</th>
+            <th>Cant. acciones</th>
+            <th>Precio actual</th>
+            <th>Valor total</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let a of accionesFiltradas">
-            <td>{{ a.empresa || a.nombre_empresa }}</td>
-            <td>{{ a.ticker || a.simbolo }}</td>
-            <td>{{ (a.precio ?? a.precio_actual) | number:'1.2-2' }}</td>
-            <td>{{ (a.variacion_porcentaje ?? a.variacion) | percent:'1.2-2' }}</td>
-            <td>{{ (a.updated_at || a.fecha) | date:'dd/MM/yy, HH:mm':'America/Bogota' }}</td>
+            <td>{{ a.empresa }}</td>
+            <td>{{ a.inversionista }}</td>
+            <td>{{ a.cantidad_acciones }}</td>
+            <td>{{ a.precio_actual | currency:'USD' }}</td>
+            <td>{{ a.valor_total | currency:'USD' }}</td>
           </tr>
         </tbody>
       </table>
-      <ng-template #sinAcciones><p>No hay datos.</p></ng-template>
+      <ng-template #sinAcciones><p>No hay datos de acciones.</p></ng-template>
 
       <!-- ⏭ Paginación -->
       <div class="pagination">
@@ -74,77 +72,6 @@
       </div>
     </section>
 
-    <!-- ╭────────────────────────────────────────────────────────────╮
-         │                        TAB: ÓRDENES                        │
-         ╰────────────────────────────────────────────────────────────╯ -->
-    <section class="neu-section" *ngIf="active==='ORDENES'">
-      <!-- 🔎 Filtros -->
-      <div class="filters-bar">
-        <input type="date" [(ngModel)]="fOrdenes.desde" (change)="loadTab('ORDENES')" />
-        <input type="date" [(ngModel)]="fOrdenes.hasta" (change)="loadTab('ORDENES')" />
-        <select [(ngModel)]="fOrdenes.tipo" (change)="loadTab('ORDENES')">
-          <option value="">Todos</option>
-          <option value="COMPRA">COMPRA</option>
-          <option value="VENTA">VENTA</option>
-        </select>
-        <input class="neu-input-inset" placeholder="Buscar en tabla..."
-               [(ngModel)]="fOrdenes.q" (input)="applyOrdenes()" />
-        <label>Mostrar:
-          <select [(ngModel)]="oLimit" (change)="applyOrdenes()">
-            <option [value]="10">10</option><option [value]="25">25</option><option [value]="50">50</option>
-          </select>
-        </label>
-      </div>
-
-      <!-- 📈 Gráfica -->
-      <div class="chart-card"><canvas id="chOrdenes"></canvas></div>
-
-      <!-- 📋 Tabla -->
-      <table class="neu-table" *ngIf="ordenesFiltradas.length; else sinOrdenes">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Fecha</th>
-            <th>Tipo</th>
-            <th>Estado</th>
-            <th>Valor</th>
-            <th>Comisión</th>
-            <th>Comisionista</th>
-            <th>Inversionista</th>
-            <th>Correo</th>
-            <th>Ciudad</th>
-            <th>País</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let o of ordenesFiltradas">
-            <td>{{ o.id_orden || o.id }}</td>
-            <td>{{ (o.fecha || o.fecha_creacion) | date:'dd/MM/yy, HH:mm':'America/Bogota' }}</td>
-            <td>
-              <span class="tipo-badge" [ngClass]="o.tipo_orden === 'COMPRA' ? 'tipo-creacion' : 'tipo-modificacion'">
-                {{ o.tipo_orden }}
-              </span>
-            </td>
-            <td>{{ o.estado }}</td>
-            <td>{{ o.valor_orden | currency:'USD' }}</td>
-            <td>{{ o.valor_comision | currency:'USD' }}</td>
-            <td>{{ o.nombre_comisionista || '—' }}</td>
-            <td>{{ o.nombre_inversionista || '—' }}</td>
-            <td>{{ o.correo_inversionista || '—' }}</td>
-            <td>{{ o.ciudad_inversionista || '—' }}</td>
-            <td>{{ o.pais_inversionista || '—' }}</td>
-          </tr>
-        </tbody>
-      </table>
-      <ng-template #sinOrdenes><p>No hay órdenes que coincidan con tu búsqueda.</p></ng-template>
-
-      <!-- ⏭ Paginación -->
-      <div class="pagination">
-        <button class="page-btn" (click)="oPag(-1)" [disabled]="oPage<=1"><i class="bi bi-chevron-left"></i></button>
-        <span>Página {{ oPage }} / {{ oPages }} — {{ oTotal }} filas</span>
-        <button class="page-btn" (click)="oPag(1)" [disabled]="oPage>=oPages"><i class="bi bi-chevron-right"></i></button>
-      </div>
-    </section>
 
     <!-- ╭────────────────────────────────────────────────────────────╮
          │                     TAB: MOVIMIENTOS                        │
@@ -176,16 +103,16 @@
             <th>Inversionista</th>
             <th>Tipo</th>
             <th>Monto</th>
-            <th>Detalle</th>
+            <th>Empresa</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let m of movsFiltradas">
             <td>{{ m.fecha | date:'dd/MM/yy, HH:mm':'America/Bogota' }}</td>
-            <td>{{ m.inversionista || m.nombre_inversionista }}</td>
+<td>{{ m.nombre_inversionista }}</td>
             <td>{{ m.tipo }}</td>
             <td>{{ m.monto | currency:'USD' }}</td>
-            <td>{{ m.detalle || '-' }}</td>
+            <td>{{ m.empresa || '-' }}</td>
           </tr>
         </tbody>
       </table>
@@ -224,7 +151,8 @@
             <th>#</th>
             <th>Empresa</th>
             <th>Órdenes</th>
-            <th>Volumen</th>
+            <th>Monto total</th>
+            <th>Comisiones</th>
           </tr>
         </thead>
         <tbody>
@@ -232,7 +160,8 @@
             <td>{{ (tPage - 1) * tLimit + i + 1 }}</td>
             <td>{{ t.empresa }}</td>
             <td>{{ t.total_ordenes }}</td>
-            <td>{{ t.volumen | number:'1.0-0' }}</td>
+<td>{{ t.volumen | currency:'USD' }}</td>
+            <td>{{ t.total_comisiones | currency:'USD' }}</td>
           </tr>
         </tbody>
       </table>

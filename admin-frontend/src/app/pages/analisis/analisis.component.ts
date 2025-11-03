@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AnalisisService } from '../../../services/analisis.service';
+import { AnalisisService, AccionActual, OrdenHist, Movimiento, TopEmpresa } from '../../../services/analisis.service';
 import { Chart, registerables } from 'chart.js';
-import { ClockComponent } from '../../components/clock/clock/clock.component'; // ⬅️ importa el reloj
+import { ClockComponent } from '../../components/clock/clock/clock.component';
 
 Chart.register(...registerables);
 
@@ -12,40 +12,40 @@ type Tab = 'ACCIONES' | 'ORDENES' | 'MOVIMIENTOS' | 'TOP';
 @Component({
   selector: 'app-analisis',
   standalone: true,
-  imports: [CommonModule, FormsModule, ClockComponent], // ⬅️ añade ClockComponent aquí
+  imports: [CommonModule, FormsModule, ClockComponent],
   templateUrl: './analisis.component.html',
   styleUrls: ['./analisis.component.scss']
 })
 export class AnalisisComponent implements OnInit, OnDestroy {
   // Header
-  nombreUsuario = 'Administrador';       // ⬅️ ahora existe
-  horaActual = '';                       // ⬅️ ahora existe
+  nombreUsuario = 'Administrador';
+  horaActual = '';
   zona = 'America/Bogota';
-  private relojInterval: any;            // ⬅️ control del intervalo
+  private relojInterval: any;
 
   // Tabs
   active: Tab = 'ACCIONES';
   loading = false;
 
-  // filtros por tab
-  fAcciones = { empresa: '', q: '' };
+  // Filtros
+  fAcciones = { q: '' };
   fOrdenes  = { desde: '', hasta: '', tipo: '' as '' | 'COMPRA' | 'VENTA', q: '' };
   fMovs     = { inversionista_id: undefined as number | undefined, desde: '', hasta: '', q: '' };
-  fTop      = { limit: 20, q: '' };
+  fTop      = { estado: '', q: '' };
 
-  // datos y paginado por tab
-  acciones: any[] = []; accionesFiltradas: any[] = []; aPage = 1; aLimit = 10; aTotal = 0; aPages = 1;
-  ordenes: any[]  = []; ordenesFiltradas: any[]  = []; oPage = 1; oLimit = 10; oTotal = 0; oPages = 1;
-  movs: any[]     = []; movsFiltradas: any[]     = []; mPage = 1; mLimit = 10; mTotal = 0; mPages = 1;
-  top: any[]      = []; topFiltradas: any[]      = []; tPage = 1; tLimit = 10; tTotal = 0; tPages = 1;
+  // Datos + paginación por tab
+  acciones: AccionActual[] = []; accionesFiltradas: AccionActual[] = []; aPage = 1; aLimit = 10; aTotal = 0; aPages = 1;
+  ordenes:  OrdenHist[]    = []; ordenesFiltradas:  OrdenHist[]    = []; oPage = 1; oLimit = 10; oTotal = 0; oPages = 1;
+  movs:     Movimiento[]   = []; movsFiltradas:     Movimiento[]   = []; mPage = 1; mLimit = 10; mTotal = 0; mPages = 1;
+  top:      TopEmpresa[]   = []; topFiltradas:      TopEmpresa[]   = []; tPage = 1; tLimit = 10; tTotal = 0; tPages = 1;
 
-  // charts
+  // Charts
   chAcciones?: Chart; chOrdenes?: Chart; chMovs?: Chart; chTop?: Chart;
 
   constructor(private api: AnalisisService) {}
 
   ngOnInit() {
-    // lee nombre desde localStorage si existe
+    // nombre en header desde localStorage si existe
     const userData = localStorage.getItem('userData');
     if (userData) {
       try {
@@ -57,8 +57,8 @@ export class AnalisisComponent implements OnInit, OnDestroy {
       } catch {}
     }
 
-    this.iniciarReloj();        // ⬅️ inicia horaActual
-    this.loadTab('ACCIONES');   // carga primer tab
+    this.iniciarReloj();
+    this.loadTab('ACCIONES');
   }
 
   ngOnDestroy() {
@@ -74,27 +74,38 @@ export class AnalisisComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  setTab(t: Tab) { this.active = t; this.loadTab(t); }
+  setTab(t: Tab) {
+    this.active = t;
+    this.loadTab(t);
+  }
 
-  // --------- LOADERS ----------
+  // --------- CARGA POR TAB ----------
   loadTab(t: Tab) {
     this.loading = true;
     switch (t) {
       case 'ACCIONES':
-        this.api.accionesActuales({ empresa: this.fAcciones.empresa || undefined }).subscribe({
-          next: rows => { this.acciones = rows ?? []; this.aPage = 1; this.applyAcciones(); this.drawAcciones(); },
-          error: e => console.error(e), complete: () => this.loading = false
+        this.api.accionesActuales().subscribe({
+          next: (rows) => {
+            this.acciones = rows ?? [];
+            this.aPage = 1;
+            this.applyAcciones();
+            this.drawAcciones();
+          },
+          error: (e) => console.error('❌ Acciones:', e),
+          complete: () => (this.loading = false),
         });
         break;
 
       case 'ORDENES':
-        this.api.historialOrdenes({
-          desde: this.fOrdenes.desde || undefined,
-          hasta: this.fOrdenes.hasta || undefined,
-          tipo:  this.fOrdenes.tipo  || undefined,
-        }).subscribe({
-          next: rows => { this.ordenes = rows ?? []; this.oPage = 1; this.applyOrdenes(); this.drawOrdenes(); },
-          error: e => console.error(e), complete: () => this.loading = false
+        this.api.historialOrdenes().subscribe({
+          next: (rows) => {
+            this.ordenes = rows ?? [];
+            this.oPage = 1;
+            this.applyOrdenes();
+            this.drawOrdenes();
+          },
+          error: (e) => console.error('❌ Órdenes:', e),
+          complete: () => (this.loading = false),
         });
         break;
 
@@ -104,55 +115,99 @@ export class AnalisisComponent implements OnInit, OnDestroy {
         if (this.fMovs.desde)            movParams.desde = this.fMovs.desde;
         if (this.fMovs.hasta)            movParams.hasta = this.fMovs.hasta;
 
-        this.api.movimientos(movParams as any).subscribe({
-          next: rows => { this.movs = rows ?? []; this.mPage = 1; this.applyMovs(); this.drawMovs(); },
-          error: e => console.error(e), complete: () => this.loading = false
+        this.api.movimientos(movParams).subscribe({
+          next: (rows) => {
+            this.movs = rows ?? [];
+            this.mPage = 1;
+            this.applyMovs();
+            this.drawMovs();
+          },
+          error: (e) => console.error('❌ Movimientos:', e),
+          complete: () => (this.loading = false),
         });
         break;
       }
 
       case 'TOP':
-        this.api.topEmpresas({ limit: this.fTop.limit }).subscribe({
-          next: rows => { this.top = rows ?? []; this.tPage = 1; this.applyTop(); this.drawTop(); },
-          error: e => console.error(e), complete: () => this.loading = false
+        this.api.topEmpresas(this.fTop.estado ? { estado: this.fTop.estado } : undefined).subscribe({
+          next: (rows) => {
+            this.top = rows ?? [];
+            this.tPage = 1;
+            this.applyTop();
+            this.drawTop();
+          },
+          error: (e) => console.error('❌ Top empresas:', e),
+          complete: () => (this.loading = false),
         });
         break;
     }
   }
 
-  // --------- FILTER + PAGINATION ----------
+  // --------- FILTRO + PAGINACIÓN ----------
   private norm(s: any) {
     return String(s ?? '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
   }
 
   applyAcciones() {
     const q = this.norm(this.fAcciones.q);
-    let arr = !q ? [...this.acciones] : this.acciones.filter(r =>
-      [r.empresa, r.nombre_empresa, r.ticker, r.simbolo].some(x => this.norm(x).includes(q))
-    );
-    this.aTotal = arr.length; this.aPages = Math.max(1, Math.ceil(this.aTotal / this.aLimit));
+    let arr = !q
+      ? [...this.acciones]
+      : this.acciones.filter(r =>
+          [r.empresa, r.inversionista].some(x => this.norm(x).includes(q))
+        );
+    this.aTotal = arr.length;
+    this.aPages = Math.max(1, Math.ceil(this.aTotal / this.aLimit));
     const ini = (this.aPage - 1) * this.aLimit, fin = ini + this.aLimit;
     this.accionesFiltradas = arr.slice(ini, fin);
   }
 
   applyOrdenes() {
     const q = this.norm(this.fOrdenes.q);
-    let arr = !q ? [...this.ordenes] : this.ordenes.filter(o =>
-      [o.id_orden, o.tipo_orden, o.estado, o.nombre_comisionista, o.nombre_inversionista]
-        .some(x => this.norm(x).includes(q))
-    );
-    this.oTotal = arr.length; this.oPages = Math.max(1, Math.ceil(this.oTotal / this.oLimit));
+    let arr = !q
+      ? [...this.ordenes]
+      : this.ordenes.filter(o =>
+          [o.tipo_orden, o.estado, o.comisionista, o.inversionista, o.empresa]
+            .some(x => this.norm(x).includes(q))
+        );
+    // filtros de fecha/tipo si decides aplicarlos en front (además del back):
+    if (this.fOrdenes.tipo) {
+      arr = arr.filter(o => (o.tipo_orden ?? '').toUpperCase() === this.fOrdenes.tipo);
+    }
+    if (this.fOrdenes.desde) {
+      const d = Date.parse(this.fOrdenes.desde);
+      arr = arr.filter(o => Date.parse(o.fecha_creacion) >= d);
+    }
+    if (this.fOrdenes.hasta) {
+      const h = Date.parse(this.fOrdenes.hasta) + 24 * 3600 * 1000; // fin de día
+      arr = arr.filter(o => Date.parse(o.fecha_creacion) < h);
+    }
+
+    this.oTotal = arr.length;
+    this.oPages = Math.max(1, Math.ceil(this.oTotal / this.oLimit));
     const ini = (this.oPage - 1) * this.oLimit, fin = ini + this.oLimit;
     this.ordenesFiltradas = arr.slice(ini, fin);
   }
 
   applyMovs() {
     const q = this.norm(this.fMovs.q);
-    let arr = !q ? [...this.movs] : this.movs.filter(m =>
-      [m.inversionista, m.nombre_inversionista, m.tipo, m.detalle]
-        .some(x => this.norm(x).includes(q))
-    );
-    this.mTotal = arr.length; this.mPages = Math.max(1, Math.ceil(this.mTotal / this.mLimit));
+    let arr = !q
+      ? [...this.movs]
+      : this.movs.filter(m =>
+          [m.nombre_inversionista, m.tipo, m.empresa]
+            .some(x => this.norm(x).includes(q))
+        );
+    // filtros opcionales en front
+    if (this.fMovs.desde) {
+      const d = Date.parse(this.fMovs.desde);
+      arr = arr.filter(m => Date.parse(m.fecha) >= d);
+    }
+    if (this.fMovs.hasta) {
+      const h = Date.parse(this.fMovs.hasta) + 24 * 3600 * 1000;
+      arr = arr.filter(m => Date.parse(m.fecha) < h);
+    }
+
+    this.mTotal = arr.length;
+    this.mPages = Math.max(1, Math.ceil(this.mTotal / this.mLimit));
     const ini = (this.mPage - 1) * this.mLimit, fin = ini + this.mLimit;
     this.movsFiltradas = arr.slice(ini, fin);
   }
@@ -160,18 +215,24 @@ export class AnalisisComponent implements OnInit, OnDestroy {
   applyTop() {
     const q = this.norm(this.fTop.q);
     let arr = !q ? [...this.top] : this.top.filter(t => this.norm(t.empresa).includes(q));
-    this.tTotal = arr.length; this.tPages = Math.max(1, Math.ceil(this.tTotal / this.tLimit));
+    this.tTotal = arr.length;
+    this.tPages = Math.max(1, Math.ceil(this.tTotal / this.tLimit));
     const ini = (this.tPage - 1) * this.tLimit, fin = ini + this.tLimit;
     this.topFiltradas = arr.slice(ini, fin);
   }
 
   // --------- CHARTS ----------
-  destroyCharts() { this.chAcciones?.destroy(); this.chOrdenes?.destroy(); this.chMovs?.destroy(); this.chTop?.destroy(); }
+  destroyCharts() {
+    this.chAcciones?.destroy();
+    this.chOrdenes?.destroy();
+    this.chMovs?.destroy();
+    this.chTop?.destroy();
+  }
 
   private drawAcciones() {
     this.chAcciones?.destroy();
-    const labels = this.acciones.map(a => a.empresa || a.nombre_empresa || a.ticker || a.simbolo);
-    const data   = this.acciones.map(a => Number(a.precio ?? a.precio_actual ?? 0));
+    const labels = this.acciones.map(a => a.empresa ?? '(sin empresa)');
+    const data   = this.acciones.map(a => Number(a.precio_actual ?? 0)); // del back
     this.chAcciones = new Chart('chAcciones', {
       type: 'bar',
       data: { labels, datasets: [{ label: 'Precio actual', data }] },
@@ -183,7 +244,7 @@ export class AnalisisComponent implements OnInit, OnDestroy {
     this.chOrdenes?.destroy();
     const map = new Map<string, number>();
     for (const o of this.ordenes) {
-      const d = new Date(o.fecha || o.fecha_creacion).toISOString().slice(0, 10);
+      const d = new Date(o.fecha_creacion).toISOString().slice(0, 10);
       map.set(d, (map.get(d) ?? 0) + 1);
     }
     const labels = [...map.keys()].sort();
@@ -215,14 +276,14 @@ export class AnalisisComponent implements OnInit, OnDestroy {
     this.chTop?.destroy();
     const labels = this.top.map(t => t.empresa);
     const data1  = this.top.map(t => Number(t.total_ordenes ?? 0));
-    const data2  = this.top.map(t => Number(t.volumen ?? 0));
+const data2  = this.top.map(t => Number((t as any).volumen ?? 0));
     this.chTop = new Chart('chTop', {
       type: 'bar',
       data: {
         labels,
         datasets: [
           { label: 'Órdenes', data: data1 },
-          { label: 'Volumen', data: data2 }
+          { label: 'Monto total', data: data2 }
         ]
       },
       options: { responsive: true, scales: { y: { beginAtZero: true } } }

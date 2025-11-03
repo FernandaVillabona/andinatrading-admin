@@ -1,4 +1,7 @@
 import { pool } from "../db/connection.js";
+import { validationResult, body } from "express-validator";  
+import { hashPassword, randomPassword } from "../utils/auth.js"; 
+import { sendMail } from "../utils/mailer.js"; 
 
 /**
  * Construcción dinámica de filtros
@@ -162,7 +165,6 @@ export const listAllUsers = async (req, res) => {
 };
 
 
-/** 🔹 Administradores (tabla usuario) */
 export const getAdmins = async (req, res) => {
   try {
     const [rows] = await pool.query(`
@@ -176,18 +178,16 @@ export const getAdmins = async (req, res) => {
         fecha_creacion AS fecha_alta,
         ultima_conexion
       FROM usuario
+      WHERE tipo_usuario = 'ADMIN'         -- ✅ IMPORTANTE
       ORDER BY fecha_creacion DESC
     `);
-
-    res.json({
-      total: rows.length,
-      data: rows
-    });
+    res.json({ total: rows.length, data: rows });
   } catch (err) {
     console.error("❌ Error obteniendo administradores:", err);
     res.status(500).json({ error: "Error al obtener administradores", details: err.message });
   }
 };
+
 
 /** 🔹 Comisionistas */
 export const getComisionistas = async (req, res) => {
@@ -276,3 +276,88 @@ export const getUsersSummary = async (_req, res) => {
     res.status(500).json({ error: "Error en resumen de usuarios", details: err.message });
   }
 };
+
+
+
+
+
+export const validateInviteAdmin = [
+  body('nombre_completo').trim().notEmpty().withMessage('nombre_completo es requerido'),
+  body('correo').isEmail().withMessage('correo inválido').toLowerCase(),
+];
+
+const inviteEmail = ({ nombre, correo, tempPass }) => {
+  const appName = process.env.APP_NAME || 'Tu App';
+  const appUrl  = process.env.APP_URL  || '#';
+  return `
+  <div style="font-family:Inter,Arial,sans-serif;max-width:600px;margin:auto;border:1px solid #eee;border-radius:12px;overflow:hidden">
+    <div style="background:#111827;color:#fff;padding:20px 24px">
+      <h2 style="margin:0;font-size:20px">${appName}</h2>
+    </div>
+    <div style="padding:24px">
+      <p>Hola <strong>${nombre}</strong>,</p>
+      <p>Has sido invitado como <strong>Administrador</strong> en <strong>${appName}</strong>.</p>
+      <p>Credenciales temporales:</p>
+      <div style="background:#F3F4F6;padding:16px;border-radius:10px;margin:12px 0">
+        <div><strong>Correo:</strong> ${correo}</div>
+        <div><strong>Contraseña temporal:</strong> ${tempPass}</div>
+      </div>
+      <p>Accede desde: <a href="${appUrl}" target="_blank" style="color:#2563EB">${appUrl}</a></p>
+      <p style="color:#6B7280;font-size:12px;margin-top:24px">Por seguridad, cambia tu contraseña al ingresar.</p>
+    </div>
+  </div>`;
+};
+
+// controllers/usersAdminController.js
+export const inviteAdmin = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+      return res.status(400).json({ error: 'Validación', details: errors.array() });
+
+    const { nombre_completo, correo } = req.body;
+
+    const [exists] = await pool.query(`SELECT id FROM usuario WHERE correo = ? LIMIT 1`, [correo]);
+    if (exists.length) return res.status(409).json({ error: 'El correo ya está registrado' });
+
+    const tempPassword = randomPassword(12);
+    const passHash = await hashPassword(tempPassword);
+
+    const [result] = await pool.query(
+      `INSERT INTO usuario (nombre_completo, correo, contrasena, tipo_usuario, estado, fecha_creacion)
+       VALUES (?, ?, ?, 'ADMIN', 'ACTIVO', NOW())`,
+      [nombre_completo, correo, passHash]
+    );
+
+    let mailWarning = null;
+    try {
+      await sendMail({
+        to: correo,
+        subject: `Invitación como Administrador - ${process.env.APP_NAME || 'Tu App'}`,
+        html: inviteEmail({ nombre: nombre_completo, correo, tempPass: tempPassword }),
+      });
+    } catch (e) {
+      console.error('✉️  No se pudo enviar el correo de invitación:', e?.message || e);
+      mailWarning = 'Usuario creado, pero no se pudo enviar el correo de invitación.';
+      // Opcional: guarda la contraseña temporal en logs/auditoría interna
+    }
+
+    return res.status(201).json({
+      message: mailWarning || 'Administrador creado e invitación enviada',
+      data: {
+        id: result.insertId,
+        nombre_completo,
+        correo,
+        tipo_usuario: 'ADMIN',
+        estado: 'ACTIVO',
+      },
+      warning: mailWarning || undefined,
+    });
+  } catch (err) {
+    console.error('❌ Error invitando admin:', err);
+    return res.status(500).json({ error: 'Error invitando admin', details: err.message });
+  }
+};
+
+
+

@@ -72,6 +72,10 @@
             </select>
           </label>
         </div>
+
+          <button class="neo-btn neo-btn--download" (click)="openInviteModal()">
+    + Invitar admin
+  </button>
       </div>
 
       <!-- Tabla -->
@@ -145,3 +149,60 @@
     </div>
   </div>
 </ng-template>
+
+
+<!-- Modal Invitar Admin -->
+<div class="neo-modal__backdrop" *ngIf="showInviteModal" (click)="closeInviteModal()">
+  <div class="neo-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <div class="neo-modal__header">
+      <h3>Invitar Administrador</h3>
+      <button class="neo-close" (click)="closeInviteModal()" aria-label="Cerrar">✖</button>
+    </div>
+
+    <div class="neo-modal__body">
+      <div class="form-group">
+        <label>Nombre completo</label>
+        <input
+          class="neu-input-inset"
+          [(ngModel)]="inviteNombre"
+          name="inviteNombre"
+          placeholder="Ej. Ana Pérez"
+          autocomplete="off"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Correo</label>
+        <input
+          class="neu-input-inset"
+          [(ngModel)]="inviteCorreo"
+          name="inviteCorreo"
+          placeholder="ana@empresa.com"
+          type="email"
+          autocomplete="off"
+          required
+        />
+      </div>
+
+      <p class="hint">
+        Se enviará una contraseña temporal y la invitación al correo.
+      </p>
+      <p class="error" *ngIf="inviteError">{{ inviteError }}</p>
+      <p class="ok" *ngIf="inviteOk">{{ inviteOk }}</p>
+    </div>
+
+    <div class="neo-modal__footer">
+      <button class="neo-btn" (click)="closeInviteModal()" [disabled]="inviteLoading">Cancelar</button>
+      <button
+        class="neo-btn neo-btn--download"
+        (click)="submitInvite()"
+        [disabled]="!isInviteValid() || inviteLoading"
+      >
+        <span *ngIf="!inviteLoading">Enviar invitación</span>
+        <span *ngIf="inviteLoading" class="neo-spinner"></span>
+        <span *ngIf="inviteLoading"> Enviando…</span>
+      </button>
+    </div>
+  </div>
+</div>

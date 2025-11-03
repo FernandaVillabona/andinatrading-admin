@@ -1,3 +1,4 @@
+// src/routes/analisisAdminRoutes.js
 import express from "express";
 import {
   getAccionesActuales,
@@ -9,10 +10,17 @@ import { verificarToken, soloAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Solo accesible por ADMIN
+/* 🧪 Rutas públicas SOLO en desarrollo */
+if (process.env.NODE_ENV !== "production") {
+  router.get("/public/acciones-actuales", getAccionesActuales);
+  router.get("/public/historial-ordenes", getHistorialOrdenes);
+  router.get("/public/movimientos", getMovimientosFinancieros);
+  router.get("/public/top-empresas", getTopEmpresasOperadas);
+}
+
+/* 🔒 A partir de aquí, todo protegido */
 router.use(verificarToken, soloAdmin);
 
-// Endpoints analíticos
 router.get("/acciones-actuales", getAccionesActuales);
 router.get("/historial-ordenes", getHistorialOrdenes);
 router.get("/movimientos", getMovimientosFinancieros);
