@@ -32,5 +32,5 @@ export class UsersService {
 
   deleteUser(id: number) {
     return this.http.delete(`${this.apiUrl}/${id}`, this.getHeaders());
-  }
+}
 }

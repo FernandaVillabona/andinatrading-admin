@@ -1,5 +1,5 @@
+// src/app.js
 import 'dotenv/config';
-
 import express from 'express';
 import cors from 'cors';
 
@@ -11,15 +11,14 @@ import usersAdminRoutes from './routes/usersAdminRoutes.js';
 import ordenesRoutes from './routes/ordenesRoutes.js';
 import analisisAdminRoutes from './routes/analisisAdminRoutes.js';
 import backupRoutes from './routes/backupRoutes.js';
-
-import { verifyMailer } from './utils/mailer.js';
-import profileRoutes from "./routes/profileRoutes.js";
-
+import profileRoutes from './routes/profileRoutes.js';
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
+// Rutas
 app.use('/api/admin', userRoutes);
 app.use('/api/admin/usuarios', usersAdminRoutes);
 app.use('/api/logs', logRoutes);
@@ -29,10 +28,15 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/historial', historialRoutes);
 app.use('/api/admin/ordenes', ordenesRoutes);
 app.use('/api/admin/analisis', analisisAdminRoutes);
-app.use("/api/profile", profileRoutes);
+app.use('/api/profile', profileRoutes);
 
 
-verifyMailer();
+app.get('/health', (_req, res) => res.status(200).json({ ok: true }));
 
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`✅ Servidor corriendo en puerto ${PORT}`));
+// eslint-disable-next-line no-unused-vars
+app.use((err, _req, res, _next) => {
+  const status = err.status || 500;
+  res.status(status).json({ error: err.message ?? 'Internal Server Error' });
+});
+
+export default app;
