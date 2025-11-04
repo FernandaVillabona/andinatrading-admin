@@ -2,7 +2,6 @@ import { pool } from "../db/connection.js";
 
 export const getDashboardData = async (req, res) => {
   try {
-    // 🧮 Totales (se asegura que devuelvan 0 si no hay registros)
     const [[totalAdmins]] = await pool.query(
       "SELECT COALESCE(COUNT(*), 0) AS total FROM usuario WHERE tipo_usuario = 'ADMIN'"
     );
@@ -19,7 +18,6 @@ export const getDashboardData = async (req, res) => {
       "SELECT COALESCE(COUNT(*), 0) AS total FROM orden"
     );
 
-    // 📜 Últimos 5 eventos del historial
     const [ultimosHistorial] = await pool.query(`
       SELECT h.descripcion, h.modulo, h.tipo_evento, h.fecha_evento, u.nombre_completo AS usuario
       FROM historial h
@@ -28,7 +26,6 @@ export const getDashboardData = async (req, res) => {
       LIMIT 5
     `);
 
-    // 🧾 Últimos 5 logs (inicio de sesión, backups, etc.)
     const [ultimosLogs] = await pool.query(`
       SELECT l.accion, l.modulo, l.fecha, u.nombre_completo AS usuario
       FROM logs l
@@ -37,7 +34,6 @@ export const getDashboardData = async (req, res) => {
       LIMIT 5
     `);
 
-    // 📊 Respuesta JSON consolidada
     res.json({
       resumen: {
         admins: totalAdmins.total || 0,

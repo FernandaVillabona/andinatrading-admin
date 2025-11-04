@@ -1,20 +1,19 @@
-// utils/mailer.js
 import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,        // smtp.gmail.com
-  port: Number(process.env.SMTP_PORT),// 465
-  secure: String(process.env.SMTP_SECURE) === 'true', // true
+  host: process.env.SMTP_HOST,       
+  port: Number(process.env.SMTP_PORT),
+  secure: String(process.env.SMTP_SECURE) === 'true', 
   auth: {
-    user: process.env.SMTP_USER,      // tu gmail
-    pass: process.env.SMTP_PASS,      // app password (sin espacios)
+    user: process.env.SMTP_USER,     
+    pass: process.env.SMTP_PASS,      
   },
   tls: { minVersion: 'TLSv1.2' },
   connectionTimeout: 12000,
   socketTimeout: 15000,
-  family: 4,          // fuerza IPv4 por si IPv6 da guerra
-  logger: true,       // 🔍 logs smtp
-  debug: true,        // 🔍 más detalle
+  family: 4,        
+  logger: true,      
+  debug: true,       
 });
 
 export const verifyMailer = async () => {

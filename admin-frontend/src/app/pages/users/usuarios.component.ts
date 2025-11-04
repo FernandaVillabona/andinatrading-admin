@@ -22,19 +22,16 @@ export class UsersComponent implements OnInit, OnDestroy {
   zonaHoraria = 'America/Bogota';
   private relojInterval: any;
 
-  // Resumen
   resumen = { admins: 0, comisionistas: 0, inversionistas: 0, total: 0 };
 
-  // Tabla / listado
   loading = true;
-  data: Usuario[] = [];            // página visible
-  private dataAll: Usuario[] = []; // universo unificado para filtrar/ordenar
+  data: Usuario[] = [];
+  private dataAll: Usuario[] = [];
   page = 1;
   limit = 10;
   total = 0;
   total_pages = 0;
 
-  // Filtros
   q = '';
   tipo: TipoUsuario = '';
   sort: keyof Usuario | 'saldo' | 'fecha_alta' | 'nombre' = 'nombre';
@@ -59,7 +56,7 @@ export class UsersComponent implements OnInit, OnDestroy {
     }
 
     this.iniciarReloj();
-    this.cargarLista();      // unifica 3 endpoints y pinta tabla
+    this.cargarLista();
   }
 
   ngOnDestroy(): void {
@@ -74,12 +71,10 @@ export class UsersComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  // trackBy para el *ngFor
   trackById(index: number, item: Usuario): number | string {
     return item.id_global ?? index;
   }
 
-  // Unifica admins + comisionistas + inversionistas y aplica filtros
   cargarLista() {
     this.loading = true;
 
@@ -87,14 +82,10 @@ export class UsersComponent implements OnInit, OnDestroy {
       admins: this.usuariosService.getAdmins(),
       comisionistas: this.usuariosService.getComisionistas(),
       inversionistas: this.usuariosService.getInversionistas(),
-      // opcional: si quieres leer /resumen/contadores real del back
-      // resumen: this.usuariosService.getResumen()
     }).subscribe({
       next: ({ admins, comisionistas, inversionistas /*, resumen*/ }) => {
-        // 1) Unificado
         this.dataAll = [...admins, ...comisionistas, ...inversionistas];
 
-        // 2) Resumen (si no usas endpoint de resumen)
         this.resumen = {
           admins: admins.length,
           comisionistas: comisionistas.length,
@@ -102,7 +93,6 @@ export class UsersComponent implements OnInit, OnDestroy {
           total: admins.length + comisionistas.length + inversionistas.length,
         };
 
-        // 3) Aplicar búsqueda + tipo + orden + paginación
         this.aplicarTodo();
       },
       error: (e) => console.error('❌ Error unificando usuarios:', e),
@@ -110,9 +100,7 @@ export class UsersComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Reaplica filtros, orden y paginación sobre dataAll
   private aplicarTodo() {
-    // A) filtro por texto
     const q = (this.q || '').trim().toLowerCase();
     let arr = !q
       ? [...this.dataAll]
@@ -124,13 +112,10 @@ export class UsersComponent implements OnInit, OnDestroy {
           (u.tipo ?? '').toLowerCase().includes(q)
         );
 
-    // B) filtro por tipo (pill)
     if (this.tipo) arr = arr.filter(u => u.tipo === this.tipo);
 
-    // C) orden
     arr = this.ordenarArreglo(arr, this.sort, this.order);
 
-    // D) paginación
     this.total = arr.length;
     this.total_pages = Math.max(1, Math.ceil(this.total / this.limit));
     const start = (this.page - 1) * this.limit;
@@ -138,7 +123,6 @@ export class UsersComponent implements OnInit, OnDestroy {
     this.data = arr.slice(start, end);
   }
 
-  // Orden genérico para Usuario[]
   private ordenarArreglo(
     arr: Usuario[],
     campo: typeof this.sort,
@@ -160,7 +144,6 @@ export class UsersComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Handlers UI (re-usan aplicarTodo)
   setTipo(t: TipoUsuario) {
     this.tipo = t;
     this.page = 1;
@@ -195,7 +178,6 @@ export class UsersComponent implements OnInit, OnDestroy {
     this.aplicarTodo();
   }
 
-  // Helpers UI
   sortIcon(campo: typeof this.sort) {
     if (this.sort !== campo) return 'bi-arrow-down-up';
     return this.order === 'ASC' ? 'bi-arrow-up' : 'bi-arrow-down';
@@ -228,7 +210,7 @@ openInviteModal() {
 }
 
 closeInviteModal() {
-  if (this.inviteLoading) return; // evita cerrar durante envío
+  if (this.inviteLoading) return;
   this.showInviteModal = false;
 }
 
@@ -252,9 +234,7 @@ submitInvite() {
   ).subscribe({
     next: (res) => {
       this.inviteOk = res.message || 'Invitación enviada';
-      // refresca lista de usuarios por si quieres ver el nuevo admin ya mismo
       this.cargarLista();
-      // opcional: cierra el modal tras un pequeño delay
       setTimeout(() => this.closeInviteModal(), 800);
       this.inviteLoading = false;
     },

@@ -1,7 +1,5 @@
-// src/controllers/historialController.js
 import { pool } from "../db/connection.js";
 
-// 🔹 Obtener todo el historial (ordenado por fecha descendente)
 export const getHistorial = async (req, res) => {
   try {
     const [rows] = await pool.query(`
@@ -24,7 +22,6 @@ export const getHistorial = async (req, res) => {
   }
 };
 
-// 🔹 Filtrar historial por módulo (Usuarios, Órdenes, Backups, etc.)
 export const getHistorialByModulo = async (req, res) => {
   try {
     const { modulo } = req.params;
@@ -52,7 +49,6 @@ export const getHistorialByModulo = async (req, res) => {
   }
 };
 
-// 🔹 Filtrar historial por tipo de evento (CREACIÓN, MODIFICACIÓN, etc.)
 export const getHistorialByEvento = async (req, res) => {
   try {
     const { tipo_evento } = req.params;
@@ -80,7 +76,6 @@ export const getHistorialByEvento = async (req, res) => {
   }
 };
 
-// 🔹 Historial con paginación (útil para dashboard con scroll infinito)
 export const getHistorialPaginado = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -118,10 +113,8 @@ export const getHistorialPaginado = async (req, res) => {
   }
 };
 
-// 🔹 Resumen de actividad para dashboard
 export const getHistorialResumen = async (req, res) => {
   try {
-    // 🔸 Conteo por tipo de evento
     const [porTipo] = await pool.query(`
       SELECT tipo_evento, COUNT(*) AS total
       FROM historial
@@ -129,7 +122,6 @@ export const getHistorialResumen = async (req, res) => {
       ORDER BY total DESC;
     `);
 
-    // 🔸 Conteo por módulo
     const [porModulo] = await pool.query(`
       SELECT modulo, COUNT(*) AS total
       FROM historial
@@ -138,7 +130,6 @@ export const getHistorialResumen = async (req, res) => {
       LIMIT 6;
     `);
 
-    // 🔸 Actividad de los últimos 30 días
 const [actividadReciente] = await pool.query(`
   SELECT fecha, COUNT(*) AS total
   FROM (

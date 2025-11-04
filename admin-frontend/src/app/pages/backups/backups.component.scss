@@ -102,16 +102,15 @@
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ===== Neumorphism base tokens ===== */
 :root {
-  --neo-bg: #e9eef6;                 /* fondo del contenedor donde viven los botones */
+  --neo-bg: #e9eef6;
   --neo-shadow-light: rgba(255, 255, 255, 0.9);
   --neo-shadow-dark: rgba(163, 177, 198, 0.65);
 
-  --blue: #2563eb;                   /* Descargar */
+  --blue: #2563eb;
   --blue-strong: #1e4fd1;
 
-  --red: #ef4444;                    /* Eliminar */
+  --red: #ef4444;
   --red-strong: #d33131;
 
   --text: #0f172a;
@@ -133,7 +132,6 @@
   }
 }
 
-/* ===== Botón neumórfico base ===== */
 .btn-secondary,
 .btn-danger {
   appearance: none;
@@ -142,7 +140,7 @@
   padding: 8px 14px;
   font-size: 14px;
   font-weight: 600;
-  color: #fff;                       /* texto blanco en ambas variantes */
+  color: #fff;
   background: var(--neo-bg);
   box-shadow:
     6px 6px 16px var(--neo-shadow-dark),

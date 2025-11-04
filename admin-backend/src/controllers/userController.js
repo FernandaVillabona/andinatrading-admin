@@ -1,4 +1,3 @@
-// src/controllers/userController.js
 import { pool } from "../db/connection.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -6,7 +5,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// 🔹 LOGIN
 export const loginUser = async (req, res) => {
   try {
     const { correo, contrasena } = req.body;
@@ -19,8 +17,7 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({ error: "Usuario no encontrado o sin permisos" });
 
     const user = users[0];
-   // const match = await bcrypt.compare(contrasena, user.contrasena);
-    //if (!match) return res.status(401).json({ error: "Contraseña incorrecta" });
+  
 
     await pool.query("UPDATE usuario SET ultima_conexion = NOW() WHERE id = ?", [user.id]);
 
@@ -44,7 +41,6 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// 🔹 SOLO ADMIN: obtener todos los usuarios
 export const getUsers = async (req, res) => {
   try {
     const [rows] = await pool.query(
@@ -56,7 +52,6 @@ export const getUsers = async (req, res) => {
   }
 };
 
-// 🔹 SOLO ADMIN: registrar usuario nuevo
 export const registerUser = async (req, res) => {
   try {
     const { nombre_completo, correo, contrasena, tipo_usuario } = req.body;

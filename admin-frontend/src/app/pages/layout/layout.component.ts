@@ -13,13 +13,10 @@ import { ProfileService } from '../../../services/profile.service';
   styleUrls: ['./layout.component.scss']
 })
 export class LayoutComponent implements OnInit {
-  // Sidebar
   sidebarOpen = true;
 
-  // Usuario
   nombreUsuario = 'Administrador';
 
-  // Modal Perfil
   showProfileModal = false;
   tab: 'nombre' | 'password' = 'nombre';
   formNombre = '';
@@ -34,7 +31,6 @@ export class LayoutComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Recuperar datos guardados en localStorage
     const userData = localStorage.getItem('userData');
     if (userData) {
       const u = JSON.parse(userData);
@@ -42,7 +38,6 @@ export class LayoutComponent implements OnInit {
       const apellido = (u.apellido || '').trim();
       this.nombreUsuario = (nombre || apellido) ? `${nombre} ${apellido}`.trim() : (nombre || 'Administrador');
     } else {
-      // (opcional) Traer desde API para sincronizar
       this.profile.getMe().subscribe({
         next: (me) => (this.nombreUsuario = me.nombre_completo || 'Administrador'),
         error: () => {}
@@ -50,19 +45,16 @@ export class LayoutComponent implements OnInit {
     }
   }
 
-  // Sidebar
   toggleSidebar() {
     this.sidebarOpen = !this.sidebarOpen;
   }
 
-  // Auth
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('userData');
     this.router.navigate(['']);
   }
 
-  // Modal Perfil
   openProfileModal() {
     this.msgOk = this.msgError = '';
     this.tab = 'nombre';
@@ -77,7 +69,6 @@ export class LayoutComponent implements OnInit {
     this.msgOk = this.msgError = '';
   }
 
-  // Guardar nombre
   guardarNombre() {
     const nombre = (this.formNombre || '').trim();
     if (nombre.length < 3) {
@@ -92,12 +83,11 @@ export class LayoutComponent implements OnInit {
         this.msgOk = res.message || 'Nombre actualizado';
         this.nombreUsuario = nombre;
 
-        // Refrescar localStorage por si la app lo usa en otros lugares
         const raw = localStorage.getItem('userData');
         if (raw) {
           const u = JSON.parse(raw);
           u.nombre = nombre;
-          delete u.apellido; // si no lo manejas, evita mostrar "undefined"
+          delete u.apellido;
           localStorage.setItem('userData', JSON.stringify(u));
         }
 
@@ -110,7 +100,6 @@ export class LayoutComponent implements OnInit {
     });
   }
 
-  // Cambiar contraseña
   cambiarPassword() {
     this.msgOk = this.msgError = '';
 

@@ -1,4 +1,3 @@
-// app.js — Cargar .env PRIMERO (una sola vez)
 import 'dotenv/config';
 
 import express from 'express';
@@ -21,7 +20,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Rutas
 app.use('/api/admin', userRoutes);
 app.use('/api/admin/usuarios', usersAdminRoutes);
 app.use('/api/logs', logRoutes);
@@ -34,7 +32,6 @@ app.use('/api/admin/analisis', analisisAdminRoutes);
 app.use("/api/profile", profileRoutes);
 
 
-// (opcional) comprobar SMTP al arrancar
 verifyMailer();
 
 const PORT = process.env.PORT || 4000;

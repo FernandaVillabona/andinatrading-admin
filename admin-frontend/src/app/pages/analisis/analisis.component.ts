@@ -17,35 +17,30 @@ type Tab = 'ACCIONES' | 'ORDENES' | 'MOVIMIENTOS' | 'TOP';
   styleUrls: ['./analisis.component.scss']
 })
 export class AnalisisComponent implements OnInit, OnDestroy {
-  // Header
   nombreUsuario = 'Administrador';
   horaActual = '';
   zona = 'America/Bogota';
   private relojInterval: any;
 
-  // Tabs
   active: Tab = 'ACCIONES';
   loading = false;
 
-  // Filtros
   fAcciones = { q: '' };
   fOrdenes  = { desde: '', hasta: '', tipo: '' as '' | 'COMPRA' | 'VENTA', q: '' };
   fMovs     = { inversionista_id: undefined as number | undefined, desde: '', hasta: '', q: '' };
   fTop      = { estado: '', q: '' };
 
-  // Datos + paginación por tab
   acciones: AccionActual[] = []; accionesFiltradas: AccionActual[] = []; aPage = 1; aLimit = 10; aTotal = 0; aPages = 1;
   ordenes:  OrdenHist[]    = []; ordenesFiltradas:  OrdenHist[]    = []; oPage = 1; oLimit = 10; oTotal = 0; oPages = 1;
   movs:     Movimiento[]   = []; movsFiltradas:     Movimiento[]   = []; mPage = 1; mLimit = 10; mTotal = 0; mPages = 1;
   top:      TopEmpresa[]   = []; topFiltradas:      TopEmpresa[]   = []; tPage = 1; tLimit = 10; tTotal = 0; tPages = 1;
 
-  // Charts
+
   chAcciones?: Chart; chOrdenes?: Chart; chMovs?: Chart; chTop?: Chart;
 
   constructor(private api: AnalisisService) {}
 
   ngOnInit() {
-    // nombre en header desde localStorage si existe
     const userData = localStorage.getItem('userData');
     if (userData) {
       try {
@@ -79,7 +74,6 @@ export class AnalisisComponent implements OnInit, OnDestroy {
     this.loadTab(t);
   }
 
-  // --------- CARGA POR TAB ----------
   loadTab(t: Tab) {
     this.loading = true;
     switch (t) {
@@ -143,7 +137,6 @@ export class AnalisisComponent implements OnInit, OnDestroy {
     }
   }
 
-  // --------- FILTRO + PAGINACIÓN ----------
   private norm(s: any) {
     return String(s ?? '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
   }
@@ -169,7 +162,6 @@ export class AnalisisComponent implements OnInit, OnDestroy {
           [o.tipo_orden, o.estado, o.comisionista, o.inversionista, o.empresa]
             .some(x => this.norm(x).includes(q))
         );
-    // filtros de fecha/tipo si decides aplicarlos en front (además del back):
     if (this.fOrdenes.tipo) {
       arr = arr.filter(o => (o.tipo_orden ?? '').toUpperCase() === this.fOrdenes.tipo);
     }
@@ -196,7 +188,6 @@ export class AnalisisComponent implements OnInit, OnDestroy {
           [m.nombre_inversionista, m.tipo, m.empresa]
             .some(x => this.norm(x).includes(q))
         );
-    // filtros opcionales en front
     if (this.fMovs.desde) {
       const d = Date.parse(this.fMovs.desde);
       arr = arr.filter(m => Date.parse(m.fecha) >= d);
@@ -221,7 +212,6 @@ export class AnalisisComponent implements OnInit, OnDestroy {
     this.topFiltradas = arr.slice(ini, fin);
   }
 
-  // --------- CHARTS ----------
   destroyCharts() {
     this.chAcciones?.destroy();
     this.chOrdenes?.destroy();
@@ -290,7 +280,6 @@ const data2  = this.top.map(t => Number((t as any).volumen ?? 0));
     });
   }
 
-  // --------- PAGINADORES ----------
   aPag(d: number){ const n = this.aPage + d; if (n < 1 || n > this.aPages) return; this.aPage = n; this.applyAcciones(); }
   oPag(d: number){ const n = this.oPage + d; if (n < 1 || n > this.oPages) return; this.oPage = n; this.applyOrdenes(); }
   mPag(d: number){ const n = this.mPage + d; if (n < 1 || n > this.mPages) return; this.mPage = n; this.applyMovs(); }

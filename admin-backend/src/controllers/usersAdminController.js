@@ -3,9 +3,7 @@ import { validationResult, body } from "express-validator";
 import { hashPassword, randomPassword } from "../utils/auth.js"; 
 import { sendMail } from "../utils/mailer.js"; 
 
-/**
- * Construcción dinámica de filtros
- */
+
 const buildWhere = (tipo, q) => {
   const where = [];
   const params = [];
@@ -24,9 +22,7 @@ const buildWhere = (tipo, q) => {
   return { whereSQL, params };
 };
 
-/**
- * 🔹 Listar todos los usuarios (unificados desde las 3 tablas)
- */
+
 export const listAllUsers = async (req, res) => {
   try {
     const {
@@ -56,7 +52,6 @@ export const listAllUsers = async (req, res) => {
 
     const whereSQL = filtros.length ? `WHERE ${filtros.join(" AND ")}` : "";
 
-    // 🔹 Unión de las tres tablas
     const unionSQL = `
       SELECT 
         u.id AS id_global,
@@ -110,14 +105,12 @@ export const listAllUsers = async (req, res) => {
       LEFT JOIN pais p ON p.id = i.pais_id
     `;
 
-    // 🔹 Total general
     const [countRows] = await pool.query(
       `SELECT COUNT(*) AS total FROM (${unionSQL}) AS t ${whereSQL}`,
       params
     );
     const total = countRows[0].total || 0;
 
-    // 🔹 Obtener usuarios paginados
     const [rows] = await pool.query(
       `
       SELECT * FROM (${unionSQL}) AS t
@@ -128,7 +121,6 @@ export const listAllUsers = async (req, res) => {
       [...params, Number(limit), Number(offset)]
     );
 
-    // 🔹 Contadores por tipo
     const [countsByType] = await pool.query(`
       SELECT 'ADMIN' AS tipo, COUNT(*) AS total FROM usuario
       UNION ALL
@@ -140,7 +132,6 @@ export const listAllUsers = async (req, res) => {
     const map = { ADMIN: 0, COMISIONISTA: 0, INVERSIONISTA: 0 };
     countsByType.forEach(r => map[r.tipo] = r.total);
 
-    // ✅ Respuesta combinada
     res.json({
       resumen: {
         admins: map.ADMIN,
@@ -189,7 +180,6 @@ export const getAdmins = async (req, res) => {
 };
 
 
-/** 🔹 Comisionistas */
 export const getComisionistas = async (req, res) => {
   try {
     const [rows] = await pool.query(`
@@ -219,7 +209,6 @@ export const getComisionistas = async (req, res) => {
   }
 };
 
-/** 🔹 Inversionistas */
 export const getInversionistas = async (req, res) => {
   try {
     const [rows] = await pool.query(`
@@ -251,7 +240,6 @@ export const getInversionistas = async (req, res) => {
   }
 };
 
-/** 🔹 Contadores globales */
 export const getUsersSummary = async (_req, res) => {
   try {
     const [rows] = await pool.query(`
@@ -308,7 +296,6 @@ const inviteEmail = ({ nombre, correo, tempPass }) => {
   </div>`;
 };
 
-// controllers/usersAdminController.js
 export const inviteAdmin = async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -339,7 +326,6 @@ export const inviteAdmin = async (req, res) => {
     } catch (e) {
       console.error('✉️  No se pudo enviar el correo de invitación:', e?.message || e);
       mailWarning = 'Usuario creado, pero no se pudo enviar el correo de invitación.';
-      // Opcional: guarda la contraseña temporal en logs/auditoría interna
     }
 
     return res.status(201).json({

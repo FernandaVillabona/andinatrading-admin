@@ -15,13 +15,11 @@
       </div>
     </header>
 
-    <!-- Pestañas -->
     <div class="tabs">
       <button class="pill" [class.active]="tab==='eventos'" (click)="cambiarTab('eventos')">Eventos</button>
       <button class="pill" [class.active]="tab==='ordenes'" (click)="cambiarTab('ordenes')">Órdenes</button>
     </div>
 
-    <!-- 🔎 Filtros compartidos -->
     <section class="neu-section">
       <div class="filters-bar">
         <div class="search-bar">
@@ -34,7 +32,6 @@
           />
         </div>
 
-        <!-- Pills de tipos solo para Eventos -->
         <div class="type-pills" *ngIf="tab==='eventos'">
           <button class="pill" [class.active]="filtroTipo === ''" (click)="setTipo('')">Todos</button>
           <button class="pill" [class.active]="filtroTipo === 'CREACION'" (click)="setTipo('CREACION')">Creación</button>
@@ -44,7 +41,6 @@
           <button class="pill" [class.active]="filtroTipo === 'OTRO'" (click)="setTipo('OTRO')">Otro</button>
         </div>
 
-        <!-- Pills de módulos (eventos) -->
         <div class="type-pills scrollable" *ngIf="tab==='eventos'">
           <button class="pill small" [class.active]="filtroModulo === ''" (click)="setModulo('')">Todos los módulos</button>
           <button class="pill small" *ngFor="let m of modulosDisponibles"
@@ -54,7 +50,6 @@
         </div>
       </div>
 
-      <!-- 📋 Tabla EVENTOS -->
       <table class="neu-table" *ngIf="tab==='eventos' && logsFiltrados.length > 0; else sinEventos">
         <thead>
           <tr>
@@ -82,7 +77,6 @@
         </tbody>
       </table>
 
-      <!-- 📋 Tabla ÓRDENES -->
       <table class="neu-table" *ngIf="tab==='ordenes' && ordenesFiltradas.length > 0; else sinOrdenes">
         <thead>
           <tr>

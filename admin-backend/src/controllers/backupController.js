@@ -1,4 +1,3 @@
-// src/controllers/backupController.js
 import { pool } from "../db/connection.js";
 import fs from "fs";
 import path from "path";
@@ -6,9 +5,7 @@ import path from "path";
 const BACKUP_DIR = path.resolve("backups");
 if (!fs.existsSync(BACKUP_DIR)) fs.mkdirSync(BACKUP_DIR);
 
-/**
- * 📋 Obtener lista de backups
- */
+
 export const getBackups = async (req, res) => {
   try {
     const [rows] = await pool.query(`
@@ -30,9 +27,7 @@ export const getBackups = async (req, res) => {
   }
 };
 
-/**
- * 💾 Generar backup (modo SQL plano)
- */
+
 export const generarBackup = async (req, res) => {
   const userId = req.user?.id || null;
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
@@ -79,9 +74,7 @@ export const generarBackup = async (req, res) => {
   }
 };
 
-/**
- * 🗑️ Eliminar backup
- */
+
 export const eliminarBackup = async (req, res) => {
   const { id } = req.params;
 
@@ -102,9 +95,7 @@ export const eliminarBackup = async (req, res) => {
   }
 };
 
-/**
- * ⬇️ Descargar backup
- */
+
 export const descargarBackup = async (req, res) => {
   const { id } = req.params;
 

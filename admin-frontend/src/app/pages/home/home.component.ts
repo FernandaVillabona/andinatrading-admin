@@ -41,7 +41,6 @@ onSubmit() {
   this.authService.login(this.correo, this.contrasena).subscribe({
     next: (res) => {
       console.log('✅ Login exitoso:', res);
-      // 🔹 Redirigir correctamente al layout con dashboard
       this.router.navigate(['/admin/dashboard']);
     },
     error: (err) => {

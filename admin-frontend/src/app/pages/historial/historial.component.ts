@@ -28,7 +28,7 @@ zonaHoraria = 'America/Bogota';
   nombreUsuario = 'Administrador';
   private relojInterval: any;
   filtro = '';
-filtroTipo: string = ''; // '', 'CREACION', 'MODIFICACION', 'ELIMINACION', 'RESPALDO'
+filtroTipo: string = '';
 
   constructor(private historialService: HistorialService) {}
 
@@ -80,7 +80,6 @@ this.eventosDisponibles = Array.from(
   }
 
   generarGraficas() {
-    // Eventos por tipo
     const tipoLabels = this.resumen.por_tipo.map((t: any) => t.tipo_evento);
     const tipoData = this.resumen.por_tipo.map((t: any) => t.total);
     new Chart('chartTipo', {
@@ -95,7 +94,6 @@ this.eventosDisponibles = Array.from(
       }
     });
 
-    // Por módulo
     const modLabels = this.resumen.por_modulo.map((m: any) => m.modulo);
     const modData = this.resumen.por_modulo.map((m: any) => m.total);
     new Chart('chartModulo', {
@@ -111,7 +109,6 @@ this.eventosDisponibles = Array.from(
       options: { scales: { y: { beginAtZero: true } } }
     });
 
-    // Actividad 30 días
     const actLabels = this.resumen.actividad_30_dias.map((d: any) =>
       new Date(d.fecha).toLocaleDateString('es-ES')
     );
@@ -173,7 +170,6 @@ setTipo(tipo: string) {
   this.aplicarFiltro();
 }
 
-// Quita tildes y pasa a mayúsculas para comparar robusto
 private normalize(value: any): string {
   return String(value ?? '')
     .normalize('NFD')
@@ -186,13 +182,11 @@ aplicarFiltro() {
   const f = this.normalize(this.filtro);
 
   this.historialFiltrado = this.historial.filter((e) => {
-    // 1) match de texto global (en cualquier campo)
     const matchesText = Object.values(e).some((val) =>
       this.normalize(val).includes(f)
     );
 
-    // 2) match de tipo (si hay filtro)
-    const tipo = this.normalize(e.tipo_evento); // p.ej. 'CREACION'
+    const tipo = this.normalize(e.tipo_evento);
     const matchesTipo = !this.filtroTipo || tipo === this.filtroTipo;
 
     return matchesText && matchesTipo;

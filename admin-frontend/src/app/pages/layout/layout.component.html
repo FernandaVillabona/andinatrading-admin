@@ -1,5 +1,4 @@
 <div class="layout">
-  <!-- 🟣 Sidebar -->
   <aside class="sidebar">
     <div class="brand">
       <div class="logo-wrapper">
@@ -19,7 +18,6 @@
     </div>
 
     <nav class="menu">
-      <!-- ✅ Ajuste de rutas -->
       <a routerLink="/admin/dashboard" routerLinkActive="active" class="menu-item">
         <i class="bi bi-house-door-fill"></i>
         <span>Inicio</span>
@@ -56,14 +54,12 @@
     </button>
   </aside>
 
-  <!-- 🧩 Contenido principal -->
   <main class="content">
     <router-outlet></router-outlet>
   </main>
 </div>
 
-<!-- ===== Modal Perfil (colocado al final del HTML) ===== -->
-<!-- ===== Modal Perfil ===== -->
+
 <div class="neo-modal__backdrop" *ngIf="showProfileModal">
   <div class="neo-modal" role="dialog" aria-modal="true" aria-labelledby="perfilTitle">
     <div class="neo-modal__header">
@@ -71,7 +67,6 @@
       <button class="neo-close" (click)="closeProfileModal()" aria-label="Cerrar">✕</button>
     </div>
 
-    <!-- Tabs elegantes -->
     <div class="neo-tabs neo-tabs--segmented" [attr.data-active]="tab">
       <button
         class="seg-pill"
@@ -93,7 +88,6 @@
     </div>
 
     <div class="neo-modal__body">
-      <!-- Tab Nombre -->
       <div id="tab-nombre" *ngIf="tab==='nombre'">
         <div class="form-group">
           <label>Nombre completo</label>
@@ -104,7 +98,6 @@
         <p class="ok" *ngIf="msgOk">{{ msgOk }}</p>
       </div>
 
-      <!-- Tab Password -->
       <div id="tab-password" *ngIf="tab==='password'">
         <div class="form-group">
           <label>Contraseña actual</label>
@@ -124,7 +117,6 @@
       </div>
     </div>
 
-    <!-- Botones alineados a la derecha -->
     <div class="neo-modal__footer neo-modal__footer--right">
       <button class="neo-btn" (click)="closeProfileModal()">Cancelar</button>
       <button class="neo-btn neo-btn--download" *ngIf="tab==='nombre'" [disabled]="saving" (click)="guardarNombre()">

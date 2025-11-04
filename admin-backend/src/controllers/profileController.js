@@ -1,4 +1,3 @@
-/** Obtener mi perfil (autenticado) */
 import { pool } from "../db/connection.js";
 import bcrypt from "bcryptjs";
 
@@ -16,7 +15,6 @@ export const getMyProfile = async (req, res) => {
   }
 };
 
-/** Actualizar solo mi nombre completo */
 export const updateMyName = async (req, res) => {
   try {
     const { nombre_completo } = req.body;
@@ -33,7 +31,6 @@ export const updateMyName = async (req, res) => {
   }
 };
 
-/** Cambiar mi contraseña (requiere contraseña actual) */
 export const changeMyPassword = async (req, res) => {
   try {
     const { actual, nueva } = req.body;
@@ -45,7 +42,6 @@ export const changeMyPassword = async (req, res) => {
       return res.status(400).json({ error: "La nueva contraseña debe tener al menos 8 caracteres" });
     }
 
-    // Lee el hash actual
     const [rows] = await pool.query(
       `SELECT contrasena FROM usuario WHERE id = ? LIMIT 1`,
       [req.user.id]
@@ -56,7 +52,6 @@ export const changeMyPassword = async (req, res) => {
     const ok = await bcrypt.compare(actual, hashActual);
     if (!ok) return res.status(401).json({ error: "Contraseña actual incorrecta" });
 
-    // Evitar reutilizar misma clave
     const misma = await bcrypt.compare(nueva, hashActual);
     if (misma) return res.status(400).json({ error: "La nueva contraseña no puede ser igual a la actual" });
 

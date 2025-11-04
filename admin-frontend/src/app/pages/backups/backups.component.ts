@@ -12,13 +12,11 @@ import { ClockComponent } from '../../components/clock/clock/clock.component';
   styleUrls: ['./backups.component.scss']
 })
 export class BackupsComponent implements OnInit, OnDestroy {
-  // 🕓 Header
   nombreUsuario = 'Administrador';
   horaActual = '';
   zonaHoraria = Intl.DateTimeFormat().resolvedOptions().timeZone;
   private relojInterval: any;
 
-  // 📦 Datos
   backups: Backup[] = [];
   backupsFiltrados: Backup[] = [];
   loading = true;
@@ -29,7 +27,6 @@ isDownloading(id: number) { return this.downloadingIds.has(id); }
 
   constructor(private backupsService: BackupsService) {}
 
-  // 🧭 Ciclo de vida
   ngOnInit(): void {
     const userData = localStorage.getItem('userData');
     if (userData) {
@@ -53,12 +50,11 @@ isDownloading(id: number) { return this.downloadingIds.has(id); }
     }, 1000);
   }
 
-  // 🔹 Cargar backups desde el backend
   cargarBackups() {
     this.loading = true;
    this.backupsService.getAll().subscribe({
   next: (res) => {
-    this.backups = res; // ✅ ya está tipado correctamente
+    this.backups = res;
     this.backupsFiltrados = [...this.backups];
   },
   error: (err) => {
@@ -69,7 +65,6 @@ isDownloading(id: number) { return this.downloadingIds.has(id); }
 });
   }
 
-  // 💾 Crear nuevo backup manual
   generarBackup() {
     if (this.creando) return;
     this.creando = true;
@@ -87,7 +82,6 @@ isDownloading(id: number) { return this.downloadingIds.has(id); }
     });
   }
 
-  // 🗑️ Eliminar backup
   eliminarBackup(id: number) {
     if (!confirm('¿Eliminar este backup? Esta acción no se puede deshacer.')) return;
 
@@ -103,7 +97,6 @@ isDownloading(id: number) { return this.downloadingIds.has(id); }
     });
   }
 
-  // 🔎 Filtro rápido en el front
   aplicarFiltro() {
     const texto = this.filtroTexto.toLowerCase();
     this.backupsFiltrados = this.backups.filter(
@@ -115,7 +108,6 @@ isDownloading(id: number) { return this.downloadingIds.has(id); }
     );
   }
 
-  // ✏️ Placeholder (futuro)
   editarBackup(backup: Backup) {
     alert(`Función de editar próximamente ✏️\n\nBackup: ${backup.nombre_archivo}`);
   }

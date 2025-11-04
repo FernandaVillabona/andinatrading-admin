@@ -1,6 +1,5 @@
 <div class="dashboard-container" *ngIf="!loading; else cargando">
   <main class="main-content">
-    <!-- 🟣 Header -->
     <header class="dashboard-header">
       <div class="header-left">
         <h2>Gestión de Backups</h2>
@@ -14,7 +13,6 @@
       </div>
     </header>
 
-    <!-- 🔧 Barra de controles -->
     <section class="neu-section">
       <div class="filters-bar">
         <div class="search-bar">
@@ -34,7 +32,6 @@
         </div>
       </div>
 
-      <!-- 📋 Tabla de Backups -->
       <table class="neu-table" *ngIf="backups.length > 0; else sinBackups">
         <thead>
           <tr>

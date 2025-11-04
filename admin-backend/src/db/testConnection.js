@@ -1,4 +1,3 @@
-// src/db/testConnection.js
 import pool from "./connection.js";
 
 async function test() {

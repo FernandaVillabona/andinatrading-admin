@@ -2,9 +2,8 @@ import { pool } from "../db/connection.js";
 
 
 
-/* ============================================================
-   📊 1) Acciones actuales de inversionistas (con fallback _i/_id)
-   ============================================================ */
+   
+  
 export const getAccionesActuales = async (req, res) => {
   const sqlA = `
     SELECT 
@@ -59,10 +58,7 @@ export const getAccionesActuales = async (req, res) => {
 };
 
 
-/* ============================================================
-   💰 2) Historial de órdenes (compras/ventas)
-   Tabla: orden (… numero_accione, empresa_i, comisionista_i, inversionista_i …)
-   ============================================================ */
+
 export const getHistorialOrdenes = async (_req, res) => {
   try {
     const [[{ base_total }]] = await pool.query(
@@ -98,11 +94,7 @@ export const getHistorialOrdenes = async (_req, res) => {
   }
 };
 
-/* ============================================================
-   🪙 3) Movimientos financieros
-   Tabla: movimiento (id, empresa, fecha, monto, tipo, inversionista_i)
-   Filtros: ?inversionista_id=&desde=YYYY-MM-DD&hasta=YYYY-MM-DD
-   ============================================================ */
+
 export const getMovimientosFinancieros = async (req, res) => {
   try {
     const { inversionista_id, desde, hasta } = req.query;

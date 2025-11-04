@@ -15,27 +15,22 @@ type LogEntryUI = BackLogEntry & { tipo: string };
   styleUrls: ['./logs.component.scss']
 })
 export class LogsComponent implements OnInit, OnDestroy {
-  // pestañas
   tab: 'eventos' | 'ordenes' = 'eventos';
 
-  // Logs (eventos)
   logs: LogEntryUI[] = [];
   logsFiltrados: LogEntryUI[] = [];
 
-  // Órdenes
   ordenes: Orden[] = [];
   ordenesFiltradas: Orden[] = [];
 
-  // Estado UI
   loading = true;
   nombreUsuario = 'Administrador';
   horaActual = '';
   zonaHoraria = 'America/Bogota';
   private relojInterval: any;
 
-  // Filtros compartidos
   filtroTexto = '';
-  filtroTipo: string = '';     // '', 'CREACION', 'MODIFICACION', 'ELIMINACION', 'RESPALDO', 'OTRO'
+  filtroTipo: string = '';
   filtroModulo: string = '';
   modulosDisponibles: string[] = [];
 
@@ -70,7 +65,6 @@ export class LogsComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  // ------- Eventos / Logs -------
   cargarLogs() {
     this.loading = true;
     this.logsService.getAllLogs().subscribe({
@@ -100,7 +94,6 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.logsFiltrados.sort((a: any, b: any) => ('' + a[campo]).localeCompare(b[campo]));
   }
 
-  // ------- Órdenes -------
   cargarOrdenes() {
     this.loading = true;
     this.ordenesService.getOrdenes().subscribe({
@@ -118,7 +111,6 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.ordenesFiltradas.sort((a: any, b: any) => ('' + a[campo]).localeCompare(b[campo]));
   }
 
-  // ------- Filtro compartido -------
   private normalize(v: any): string {
     return String(v ?? '')
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -128,7 +120,6 @@ export class LogsComponent implements OnInit, OnDestroy {
   aplicarFiltro() {
     const q = this.normalize(this.filtroTexto);
 
-    // Eventos
     this.logsFiltrados = this.logs.filter(l => {
       const matchTexto =
         this.normalize(l.usuario).includes(q) ||
@@ -141,7 +132,6 @@ export class LogsComponent implements OnInit, OnDestroy {
       return matchTexto && matchTipo && matchModulo;
     });
 
-    // Órdenes
     this.ordenesFiltradas = this.ordenes.filter(o => {
       const matchTexto =
         this.normalize(o.id_orden).includes(q) ||

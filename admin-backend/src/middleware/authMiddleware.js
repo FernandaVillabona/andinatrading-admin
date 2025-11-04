@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// ✅ Middleware para verificar si el token es válido
 export const verificarToken = (req, res, next) => {
   const token = req.headers["authorization"]?.split(" ")[1];
   if (!token) return res.status(403).json({ error: "Token requerido" });
@@ -17,7 +16,6 @@ export const verificarToken = (req, res, next) => {
   }
 };
 
-// ✅ Middleware para asegurar que sea ADMIN
 export const soloAdmin = (req, res, next) => {
   if (req.user?.tipo_usuario !== "ADMIN") {
     return res.status(403).json({ error: "Acceso denegado — Solo administradores" });
